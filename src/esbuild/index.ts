@@ -1,25 +1,12 @@
 import type { TransformOptions, TransformResult } from 'esbuild';
+import {
+	transform as esbuildTransform,
+	transformSync as esbuildTransformSync,
+	version as esbuildVersion,
+} from 'esbuild';
 import { sha1 } from '../utils/sha1';
 import { hasNativeSourceMapSupport } from '../utils/has-native-source-map-support';
 import cache from './cache';
-
-let esbuild: typeof import('esbuild');
-try {
-	const localEsbuildPath = require.resolve('esbuild', {
-		paths: [
-			process.cwd(),
-		],
-	});
-	esbuild = require(localEsbuildPath); // eslint-disable-line node/global-require
-} catch {
-	esbuild = require('esbuild'); // eslint-disable-line node/global-require
-}
-
-const {
-	transform: esbuildTransform,
-	transformSync: esbuildTransformSync,
-	version: esbuildVersion,
-} = esbuild;
 
 // Check if file is explicitly a CJS file
 const isCJS = (sourcePath: string) => (
