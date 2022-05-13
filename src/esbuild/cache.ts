@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import type { TransformResult } from 'esbuild';
-import { jsonParseSafe } from '../utils/json-parse-safe';
+import { readJsonFile } from '../utils/read-json-file';
 
 const getTime = () => Math.floor(Date.now() / 1e8);
 
@@ -52,29 +52,30 @@ class FileCache extends Map<string, TransformResult> {
 		}
 
 		const diskCacheHit = this.cacheFiles.find(cache => cache.key === key);
-		if (diskCacheHit) {
-			const cacheFilePath = path.join(this.cacheDirectory, diskCacheHit.fileName);
-			const cacheFile = fs.readFileSync(cacheFilePath, 'utf8');
-			const cachedResult: TransformResult = jsonParseSafe(cacheFile);
-
-			if (!cachedResult) {
-				// Remove broken cache file
-				fs.promises.unlink(cacheFilePath).then(
-					() => {
-						const index = this.cacheFiles.indexOf(diskCacheHit);
-						this.cacheFiles.splice(index, 1);
-					},
-					// eslint-disable-next-line @typescript-eslint/no-empty-function
-					() => {},
-				);
-				return;
-			}
-
-			// Load it into memory
-			super.set(key, cachedResult);
-
-			return cachedResult;
+		if (!diskCacheHit) {
+			return;
 		}
+
+		const cacheFilePath = path.join(this.cacheDirectory, diskCacheHit.fileName);
+		const cachedResult = readJsonFile<TransformResult>(cacheFilePath);
+
+		if (!cachedResult) {
+			// Remove broken cache file
+			fs.promises.unlink(cacheFilePath).then(
+				() => {
+					const index = this.cacheFiles.indexOf(diskCacheHit);
+					this.cacheFiles.splice(index, 1);
+				},
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				() => {},
+			);
+			return;
+		}
+
+		// Load it into memory
+		super.set(key, cachedResult);
+
+		return cachedResult;
 	}
 
 	set(key: string, value: TransformResult) {
