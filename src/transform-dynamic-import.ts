@@ -22,8 +22,14 @@ export function transformDynamicImport(
 		return;
 	}
 
-	const [imports] = parse(code);
+	const parsed = parse(code);
 
+	// Uninitialized
+	if ('then' in parsed) {
+		return;
+	}
+
+	const [imports] = parsed;
 	if (imports.length === 0) {
 		return;
 	}

@@ -26,13 +26,13 @@
 		"lint": "eslint --cache ."
 	},
 	"dependencies": {
-		"es-module-lexer": "^0.10.5",
 		"esbuild": "0.14.38"
 	},
 	"devDependencies": {
 		"@pvtnbr/eslint-config": "^0.22.0",
 		"@types/node": "^17.0.31",
 		"@types/source-map-support": "^0.5.4",
+		"es-module-lexer": "^0.10.5",
 		"eslint": "^8.15.0",
 		"magic-string": "^0.26.2",
 		"pkgroll": "^1.2.2",

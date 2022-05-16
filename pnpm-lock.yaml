@@ -13,13 +13,13 @@ specifiers:
   typescript: ^4.6.4
 
 dependencies:
-  es-module-lexer: 0.10.5
   esbuild: 0.14.38
 
 devDependencies:
   '@pvtnbr/eslint-config': 0.22.0_hcfsmds2fshutdssjqluwm76uu
   '@types/node': 17.0.31
   '@types/source-map-support': 0.5.4
+  es-module-lexer: 0.10.5
   eslint: 8.15.0
   magic-string: 0.26.2
   pkgroll: 1.2.2_typescript@4.6.4
@@ -720,7 +720,7 @@ packages:
 
   /es-module-lexer/0.10.5:
     resolution: {integrity: sha512-+7IwY/kiGAacQfY+YBhKMvEmyAJnw5grTUgjG85Pe7vcUI/6b7pZjZG8nQ7+48YhzEAEqrEgD2dCz/JIK+AYvw==}
-    dev: false
+    dev: true
 
   /es-shim-unscopables/1.0.0:
     resolution: {integrity: sha512-Jm6GPcCdC30eMLbZ2x8z2WuRwAws3zTBBKuusffYVUrNj/GVSUAZ+xKMaUpfNDR5IbyNA5LJbaecoUVbmUcB1w==}
