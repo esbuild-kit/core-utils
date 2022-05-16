@@ -4,6 +4,7 @@ import {
 	transformSync as esbuildTransformSync,
 	version as esbuildVersion,
 } from 'esbuild';
+import { transformDynamicImport } from '../transform-dynamic-import';
 import { sha1 } from '../utils/sha1';
 import { hasNativeSourceMapSupport } from '../utils/has-native-source-map-support';
 import cache from './cache';
@@ -16,6 +17,8 @@ const isCJS = (sourcePath: string) => (
 
 const nodeVersion = process.versions.node;
 
+const sourcemap = hasNativeSourceMapSupport ? 'inline' : true;
+
 const getTransformOptions = (
 	extendOptions: TransformOptions,
 ) => {
@@ -26,7 +29,7 @@ const getTransformOptions = (
 		// https://github.com/evanw/esbuild/blob/4a07b17adad23e40cbca7d2f8931e8fb81b47c33/internal/bundler/bundler.go#L158
 		loader: 'default',
 
-		sourcemap: hasNativeSourceMapSupport ? 'inline' : true,
+		sourcemap,
 
 		// Marginal performance improvement:
 		// https://twitter.com/evanwallace/status/1396336348366180359?s=20
@@ -71,6 +74,12 @@ export function transformSync(
 	}
 
 	const transformed = esbuildTransformSync(code, options);
+
+	const dynamicImportTranformed = transformDynamicImport(transformed.code);
+	if (dynamicImportTranformed) {
+		transformed.code = dynamicImportTranformed.code;
+	}
+
 	if (transformed.warnings.length > 0) {
 		const { warnings } = transformed;
 		for (const warning of warnings) {
@@ -109,6 +118,11 @@ export async function transform(
 	}
 
 	const transformed = await esbuildTransform(code, options);
+
+	const dynamicImportTranformed = transformDynamicImport(transformed.code);
+	if (dynamicImportTranformed) {
+		transformed.code = dynamicImportTranformed.code;
+	}
 
 	if (transformed.warnings.length > 0) {
 		const { warnings } = transformed;
