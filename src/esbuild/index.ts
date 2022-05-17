@@ -61,9 +61,10 @@ export function transformSync(
 
 	const transformed = esbuildTransformSync(code, options);
 
-	const dynamicImportTranformed = transformDynamicImport(transformed.code);
-	if (dynamicImportTranformed) {
-		transformed.code = dynamicImportTranformed.code;
+	const dynamicImportTransformed = transformDynamicImport(transformed, sourcemap);
+	if (dynamicImportTransformed) {
+		transformed.code = dynamicImportTransformed.code;
+		transformed.map = dynamicImportTransformed.map;
 	}
 
 	if (transformed.warnings.length > 0) {
@@ -97,9 +98,10 @@ export async function transform(
 
 	const transformed = await esbuildTransform(code, options);
 
-	const dynamicImportTranformed = transformDynamicImport(transformed.code);
-	if (dynamicImportTranformed) {
-		transformed.code = dynamicImportTranformed.code;
+	const dynamicImportTransformed = transformDynamicImport(transformed, sourcemap);
+	if (dynamicImportTransformed) {
+		transformed.code = dynamicImportTransformed.code;
+		transformed.map = dynamicImportTransformed.map;
 	}
 
 	if (transformed.warnings.length > 0) {

@@ -29,6 +29,7 @@
 		"esbuild": "0.14.38"
 	},
 	"devDependencies": {
+		"@ampproject/remapping": "^2.2.0",
 		"@pvtnbr/eslint-config": "^0.22.0",
 		"@types/node": "^17.0.31",
 		"@types/source-map-support": "^0.5.4",
