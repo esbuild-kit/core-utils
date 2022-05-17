@@ -9,12 +9,6 @@ import { sha1 } from '../utils/sha1';
 import { hasNativeSourceMapSupport } from '../utils/has-native-source-map-support';
 import cache from './cache';
 
-// Check if file is explicitly a CJS file
-const isCJS = (sourcePath: string) => (
-	sourcePath.endsWith('.cjs')
-	|| sourcePath.endsWith('.cjs.js')
-);
-
 const nodeVersion = process.versions.node;
 
 const sourcemap = hasNativeSourceMapSupport ? 'inline' : true;
@@ -90,29 +84,6 @@ export async function transform(
 	filePath: string,
 	extendOptions?: TransformOptions,
 ): Promise<TransformResult> {
-	if (isCJS(filePath)) {
-		const hash = sha1(code);
-		const cacheHit = cache.get(hash);
-		if (cacheHit) {
-			return cacheHit;
-		}
-
-		const dynamicImportTranformed = transformDynamicImport(code);
-		if (dynamicImportTranformed) {
-			code = dynamicImportTranformed.code;
-		}
-
-		const result = {
-			code,
-			map: '',
-			warnings: [],
-		};
-
-		cache.set(hash, result);
-
-		return result;
-	}
-
 	const options = getTransformOptions({
 		sourcefile: filePath,
 		...extendOptions,
