@@ -51,7 +51,6 @@ export function transformDynamicImport(
 
 	const magicString = new MagicString(code);
 
-	// Only dynamic imports should be left post-transform
 	for (const dynamicImport of imports) {
 		if (dynamicImport.d > -1) {
 			magicString.appendRight(dynamicImport.se, checkEsModule);
