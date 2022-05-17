@@ -4,17 +4,14 @@ import {
 	transformSync as esbuildTransformSync,
 	version as esbuildVersion,
 } from 'esbuild';
+import { transformDynamicImport } from '../transform-dynamic-import';
 import { sha1 } from '../utils/sha1';
 import { hasNativeSourceMapSupport } from '../utils/has-native-source-map-support';
 import cache from './cache';
 
-// Check if file is explicitly a CJS file
-const isCJS = (sourcePath: string) => (
-	sourcePath.endsWith('.cjs')
-	|| sourcePath.endsWith('.cjs.js')
-);
-
 const nodeVersion = process.versions.node;
+
+const sourcemap = hasNativeSourceMapSupport ? 'inline' : true;
 
 const getTransformOptions = (
 	extendOptions: TransformOptions,
@@ -26,7 +23,7 @@ const getTransformOptions = (
 		// https://github.com/evanw/esbuild/blob/4a07b17adad23e40cbca7d2f8931e8fb81b47c33/internal/bundler/bundler.go#L158
 		loader: 'default',
 
-		sourcemap: hasNativeSourceMapSupport ? 'inline' : true,
+		sourcemap,
 
 		// Marginal performance improvement:
 		// https://twitter.com/evanwallace/status/1396336348366180359?s=20
@@ -51,14 +48,6 @@ export function transformSync(
 	filePath: string,
 	extendOptions?: TransformOptions,
 ): TransformResult {
-	if (isCJS(filePath)) {
-		return {
-			code,
-			map: '',
-			warnings: [],
-		};
-	}
-
 	const options = getTransformOptions({
 		sourcefile: filePath,
 		...extendOptions,
@@ -71,6 +60,13 @@ export function transformSync(
 	}
 
 	const transformed = esbuildTransformSync(code, options);
+
+	const dynamicImportTransformed = transformDynamicImport(transformed, sourcemap);
+	if (dynamicImportTransformed) {
+		transformed.code = dynamicImportTransformed.code;
+		transformed.map = dynamicImportTransformed.map;
+	}
+
 	if (transformed.warnings.length > 0) {
 		const { warnings } = transformed;
 		for (const warning of warnings) {
@@ -89,14 +85,6 @@ export async function transform(
 	filePath: string,
 	extendOptions?: TransformOptions,
 ): Promise<TransformResult> {
-	if (isCJS(filePath)) {
-		return {
-			code,
-			map: '',
-			warnings: [],
-		};
-	}
-
 	const options = getTransformOptions({
 		sourcefile: filePath,
 		...extendOptions,
@@ -109,6 +97,12 @@ export async function transform(
 	}
 
 	const transformed = await esbuildTransform(code, options);
+
+	const dynamicImportTransformed = transformDynamicImport(transformed, sourcemap);
+	if (dynamicImportTransformed) {
+		transformed.code = dynamicImportTransformed.code;
+		transformed.map = dynamicImportTransformed.map;
+	}
 
 	if (transformed.warnings.length > 0) {
 		const { warnings } = transformed;
