@@ -55,11 +55,26 @@ export function transformSync(
 	extendOptions?: TransformOptions,
 ): TransformResult {
 	if (isCJS(filePath)) {
-		return {
+		const hash = sha1(code);
+		const cacheHit = cache.get(hash);
+		if (cacheHit) {
+			return cacheHit;
+		}
+
+		const dynamicImportTranformed = transformDynamicImport(code);
+		if (dynamicImportTranformed) {
+			code = dynamicImportTranformed.code;
+		}
+
+		const result = {
 			code,
 			map: '',
 			warnings: [],
 		};
+
+		cache.set(hash, result);
+
+		return result;
 	}
 
 	const options = getTransformOptions({
@@ -99,11 +114,26 @@ export async function transform(
 	extendOptions?: TransformOptions,
 ): Promise<TransformResult> {
 	if (isCJS(filePath)) {
-		return {
+		const hash = sha1(code);
+		const cacheHit = cache.get(hash);
+		if (cacheHit) {
+			return cacheHit;
+		}
+
+		const dynamicImportTranformed = transformDynamicImport(code);
+		if (dynamicImportTranformed) {
+			code = dynamicImportTranformed.code;
+		}
+
+		const result = {
 			code,
 			map: '',
 			warnings: [],
 		};
+
+		cache.set(hash, result);
+
+		return result;
 	}
 
 	const options = getTransformOptions({

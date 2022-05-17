@@ -1,4 +1,5 @@
-import { parse } from 'es-module-lexer';
+import { parse as parseWasm, init } from 'es-module-lexer';
+import { parse as parseJs } from 'es-module-lexer/js'; // eslint-disable-line import/no-unresolved
 import MagicString from 'magic-string';
 
 const checkEsModule = `.then((mod)=>{
@@ -12,6 +13,13 @@ const checkEsModule = `.then((mod)=>{
 	return mod
 })`.replace(/[\n\t]+/g, '');
 
+let wasmParserInitialized = false;
+
+// eslint-disable-next-line promise/catch-or-return
+init.then(() => {
+	wasmParserInitialized = true;
+});
+
 export function transformDynamicImport(
 	code: string | Buffer,
 ) {
@@ -22,14 +30,8 @@ export function transformDynamicImport(
 		return;
 	}
 
-	const parsed = parse(code);
+	const [imports] = wasmParserInitialized ? parseWasm(code) : parseJs(code);
 
-	// Uninitialized
-	if ('then' in parsed) {
-		return;
-	}
-
-	const [imports] = parsed;
 	if (imports.length === 0) {
 		return;
 	}
