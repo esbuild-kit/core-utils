@@ -1,7 +1,6 @@
 import { parse as parseWasm, init } from 'es-module-lexer';
 import { parse as parseJs } from 'es-module-lexer/js'; // eslint-disable-line import/no-unresolved
 import MagicString from 'magic-string';
-import type { TransformResult } from 'esbuild';
 import remapping from '@ampproject/remapping';
 
 const checkEsModule = `.then((mod)=>{
