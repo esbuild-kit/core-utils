@@ -1,7 +1,6 @@
 import { parse as parseWasm, init } from 'es-module-lexer';
 import { parse as parseJs } from 'es-module-lexer/js'; // eslint-disable-line import/no-unresolved
 import MagicString from 'magic-string';
-import type { TransformResult } from 'esbuild';
 import remapping from '@ampproject/remapping';
 
 const checkEsModule = `.then((mod)=>{
@@ -25,7 +24,7 @@ init.then(() => {
 const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
 
 export function transformDynamicImport(
-	{ code, map }: TransformResult,
+	{ code, map }: { code: string; map?: string },
 	sourcemap?: boolean | 'inline',
 ) {
 	code = code.toString();
@@ -59,7 +58,7 @@ export function transformDynamicImport(
 
 	code = magicString.toString();
 
-	if (sourcemap) {
+	if (sourcemap && map) {
 		const generatedMap = magicString.generateMap({ hires: true });
 
 		map = remapping([generatedMap.toString(), map], () => null).toString();
@@ -68,6 +67,8 @@ export function transformDynamicImport(
 			code += inlineSourceMapPrefix + Buffer.from(map, 'utf8').toString('base64');
 			map = '';
 		}
+	} else {
+		map = '';
 	}
 
 	return {
