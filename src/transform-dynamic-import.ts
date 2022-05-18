@@ -68,6 +68,8 @@ export function transformDynamicImport(
 			code += inlineSourceMapPrefix + Buffer.from(map, 'utf8').toString('base64');
 			map = '';
 		}
+	} else {
+		map = '';
 	}
 
 	return {
