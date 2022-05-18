@@ -25,7 +25,7 @@ init.then(() => {
 const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
 
 export function transformDynamicImport(
-	{ code, map }: TransformResult,
+	{ code, map }: { code: string; map?: string },
 	sourcemap?: boolean | 'inline',
 ) {
 	code = code.toString();
@@ -59,7 +59,7 @@ export function transformDynamicImport(
 
 	code = magicString.toString();
 
-	if (sourcemap) {
+	if (sourcemap && map) {
 		const generatedMap = magicString.generateMap({ hires: true });
 
 		map = remapping([generatedMap.toString(), map], () => null).toString();
