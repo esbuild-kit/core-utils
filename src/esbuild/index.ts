@@ -36,7 +36,7 @@ const getTransformOptions = (
 	};
 
 	if (options.sourcefile) {
-		let { sourcefile } = options;
+		const { sourcefile } = options;
 		const extension = path.extname(sourcefile);
 
 		if (extension) {
