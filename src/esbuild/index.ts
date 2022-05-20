@@ -1,3 +1,4 @@
+import path from 'path';
 import type { TransformOptions, TransformResult } from 'esbuild';
 import {
 	transform as esbuildTransform,
@@ -35,8 +36,18 @@ const getTransformOptions = (
 	};
 
 	if (options.sourcefile) {
-		// https://github.com/evanw/esbuild/issues/1932
-		options.sourcefile = options.sourcefile.replace(/\.[cm]ts/, '.ts');
+		const { sourcefile } = options;
+		const extension = path.extname(sourcefile);
+
+		if (extension) {
+			// https://github.com/evanw/esbuild/issues/1932
+			if (extension === '.cts' || extension === '.mts') {
+				options.sourcefile = `${sourcefile.slice(0, -3)}ts`;
+			}
+		} else {
+			// esbuild errors to detect loader when a file doesn't have an extension
+			options.sourcefile += '.js';
+		}
 	}
 
 	return options;
