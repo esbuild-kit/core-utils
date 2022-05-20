@@ -37,20 +37,17 @@ const getTransformOptions = (
 
 	if (options.sourcefile) {
 		let { sourcefile } = options;
-
 		const extension = path.extname(sourcefile);
 
 		if (extension) {
 			// https://github.com/evanw/esbuild/issues/1932
 			if (extension === '.cts' || extension === '.mts') {
-				sourcefile = `${sourcefile.slice(0, -3)}ts`;
+				options.sourcefile = `${sourcefile.slice(0, -3)}ts`;
 			}
 		} else {
 			// esbuild errors to detect loader when a file doesn't have an extension
-			sourcefile += '.js';
+			options.sourcefile += '.js';
 		}
-
-		options.sourcefile = sourcefile;
 	}
 
 	return options;
