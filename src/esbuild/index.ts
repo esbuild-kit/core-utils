@@ -41,12 +41,16 @@ const getTransformOptions = (
 
 		if (extension) {
 			// https://github.com/evanw/esbuild/issues/1932
-			if (extension === '.cts' || extension === '.mts') {
-				options.sourcefile = `${sourcefile.slice(0, -3)}ts`;
+			if (extension === '.mts') {
+				options.loader = 'ts';
+				options.format = 'esm';
+			} else if (extension === '.cts') {
+				options.loader = 'ts';
+				options.format = 'cjs';
 			}
 		} else {
 			// esbuild errors to detect loader when a file doesn't have an extension
-			options.sourcefile += '.js';
+			options.loader = 'js';
 		}
 	}
 
