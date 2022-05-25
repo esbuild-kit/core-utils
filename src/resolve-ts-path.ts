@@ -8,9 +8,9 @@ const tsExtensions: Record<string, string> = {
 
 export function resolveTsPath(filePath: string) {
 	const extension = path.extname(filePath);
-	const tryExtension = tsExtensions[extension];
+	const tsExtension = tsExtensions[extension];
 
-	if (tryExtension) {
-		return `${filePath.slice(0, -extension.length)}${tryExtension}`
+	if (tsExtension) {
+		return `${filePath.slice(0, -extension.length)}${tsExtension}`;
 	}
-};
+}
