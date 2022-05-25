@@ -11,6 +11,6 @@ export function resolveTsPath(filePath: string) {
 	const tsExtension = tsExtensions[extension];
 
 	if (tsExtension) {
-		return `${filePath.slice(0, -extension.length)}${tsExtension}`;
+		return filePath.slice(0, -extension.length) + tsExtension;
 	}
 }
