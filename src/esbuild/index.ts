@@ -66,11 +66,15 @@ export function transformSync(
 	filePath: string,
 	extendOptions?: TransformOptions,
 ): TransformResult {
+	const define: { [key: string]: string } = {};
+
+	if (!(filePath.endsWith('.cjs') || filePath.endsWith('.cts'))) {
+		define['import.meta.url'] = `'${pathToFileURL(filePath)}'`;
+	}
+
 	const options = getTransformOptions({
 		sourcefile: filePath,
-		define: {
-			'import.meta.url': `'${pathToFileURL(filePath)}'`,
-		},
+		define,
 		...extendOptions,
 	});
 
