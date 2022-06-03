@@ -1,3 +1,4 @@
+import { pathToFileURL } from 'url';
 import path from 'path';
 import type { TransformOptions, TransformResult } from 'esbuild';
 import {
@@ -67,6 +68,9 @@ export function transformSync(
 ): TransformResult {
 	const options = getTransformOptions({
 		sourcefile: filePath,
+		define: {
+			'import.meta.url': `'${pathToFileURL(filePath)}'`,
+		},
 		...extendOptions,
 	});
 
