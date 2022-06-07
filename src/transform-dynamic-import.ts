@@ -1,6 +1,6 @@
-import { parseEsm } from './utils/es-module-lexer';
 import MagicString from 'magic-string';
 import remapping from '@ampproject/remapping';
+import { parseEsm } from './utils/es-module-lexer';
 
 const checkEsModule = `.then((mod)=>{
 	const exports = Object.keys(mod);
