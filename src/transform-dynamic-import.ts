@@ -1,5 +1,4 @@
-import { parse as parseWasm, init } from 'es-module-lexer';
-import { parse as parseJs } from 'es-module-lexer/js'; // eslint-disable-line import/no-unresolved
+import { parseEsm } from './utils/es-module-lexer';
 import MagicString from 'magic-string';
 import remapping from '@ampproject/remapping';
 
@@ -13,13 +12,6 @@ const checkEsModule = `.then((mod)=>{
 
 	return mod
 })`.replace(/[\n\t]+/g, '');
-
-let wasmParserInitialized = false;
-
-// eslint-disable-next-line promise/catch-or-return
-init.then(() => {
-	wasmParserInitialized = true;
-});
 
 const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
 
@@ -42,7 +34,7 @@ export function transformDynamicImport(
 		code = code.slice(0, sourceMapIndex);
 	}
 
-	const [imports] = wasmParserInitialized ? parseWasm(code) : parseJs(code);
+	const [imports] = parseEsm(code);
 
 	if (imports.length === 0) {
 		return;
