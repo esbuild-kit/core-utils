@@ -49,5 +49,6 @@ export function applySourceMap(
 		sourcemaps.set(filePath, mapString);
 		return code;
 	}
+
 	return code + inlineSourceMapPrefix + Buffer.from(mapString, 'utf8').toString('base64');
 }
