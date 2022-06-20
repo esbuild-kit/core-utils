@@ -5,12 +5,12 @@ import {
 	transformSync as esbuildTransformSync,
 	version as esbuildVersion,
 } from 'esbuild';
-import { transformDynamicImport } from './transform-dynamic-import';
 import { sha1 } from '../utils/sha1';
+import { applySourceMap } from '../source-map';
+import { transformDynamicImport } from './transform-dynamic-import';
 import cache from './cache';
 import { applyTransformersSync, applyTransformers } from './apply-transformers';
 import { getEsbuildOptions } from './get-esbuild-options';
-import { applySourceMap } from '../source-map';
 
 export * from './transform-dynamic-import';
 
@@ -43,7 +43,8 @@ export function transformSync(
 	const transformed = applyTransformersSync(
 		code,
 		[
-			(code) => esbuildTransformSync(code, esbuildOptions),
+			// eslint-disable-next-line @typescript-eslint/no-shadow
+			code => esbuildTransformSync(code, esbuildOptions),
 			transformDynamicImport,
 		] as const,
 	);
@@ -79,7 +80,8 @@ export async function transform(
 	}
 
 	const transformed = await applyTransformers(code, [
-		(code) => esbuildTransform(code, esbuildOptions),
+		// eslint-disable-next-line @typescript-eslint/no-shadow
+		code => esbuildTransform(code, esbuildOptions),
 		transformDynamicImport,
 	] as const);
 

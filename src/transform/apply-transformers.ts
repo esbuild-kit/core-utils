@@ -6,7 +6,7 @@ type MaybePromise<T> = T | Promise<T>;
 type IntersectionArray<T extends unknown[]> = (
 	T extends [infer FirstElement, ...infer RestElements]
 		? FirstElement & IntersectionArray<RestElements>
-		: {}
+		: unknown
 );
 
 type Transformed = {
@@ -21,10 +21,10 @@ type Transformer<
 > = (code: string) => Result;
 
 type Results<
-	Arr extends Transformer<MaybePromise<TransformerResult>>[]
+	Array_ extends Transformer<MaybePromise<TransformerResult>>[]
 > = IntersectionArray<{
-	[Key in keyof Arr]: (
-		Arr[Key] extends Transformer<infer ReturnType>
+	[Key in keyof Array_]: (
+		Array_[Key] extends Transformer<infer ReturnType>
 			? ReturnType
 			: unknown
 	);
@@ -79,7 +79,7 @@ export async function applyTransformers<
 
 		if (transformed) {
 			Object.assign(result, transformed);
-			maps.unshift(transformed.map);	
+			maps.unshift(transformed.map);
 		}
 	}
 
