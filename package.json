@@ -14,15 +14,15 @@
 		"dist"
 	],
 	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
+	"_types": "./dist/index.d.ts",
 	"exports": {
 		"// Node can interop CJS modules": "",
 		"import": "./dist/index.js",
 		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
+		"_types": "./dist/index.d.ts"
 	},
 	"scripts": {
-		"build": "pkgroll --minify",
+		"build": "pkgroll",
 		"lint": "eslint --cache ."
 	},
 	"dependencies": {
