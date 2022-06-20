@@ -12,7 +12,7 @@ import cache from './cache';
 import { applyTransformersSync, applyTransformers } from './apply-transformers';
 import { getEsbuildOptions } from './get-esbuild-options';
 
-export * from './transform-dynamic-import';
+export { transformDynamicImport } from './transform-dynamic-import';
 
 // Used by cjs-loader
 export function transformSync(

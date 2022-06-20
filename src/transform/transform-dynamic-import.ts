@@ -2,6 +2,9 @@ import MagicString from 'magic-string';
 import type { EncodedSourceMap } from '@ampproject/remapping';
 import { parseEsm } from '../utils/es-module-lexer';
 
+// Necessary for types to build correctly
+export type { EncodedSourceMap };
+
 const checkEsModule = `.then((mod)=>{
 	const exports = Object.keys(mod);
 	if(
