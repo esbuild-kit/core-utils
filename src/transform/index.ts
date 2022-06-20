@@ -28,6 +28,7 @@ export function transformSync(
 	}
 
 	const esbuildOptions = getEsbuildOptions({
+		format: 'cjs',
 		sourcefile: filePath,
 		define,
 		...extendOptions,
@@ -69,6 +70,7 @@ export async function transform(
 	sourcemaps?: Map<string, string>,
 ): Promise<string> {
 	const esbuildOptions = getEsbuildOptions({
+		format: 'esm',
 		sourcefile: filePath,
 		...extendOptions,
 	});
