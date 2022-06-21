@@ -49,6 +49,7 @@ export function transformSync(
 		[
 			// eslint-disable-next-line @typescript-eslint/no-shadow
 			(code) => {
+				// eslint-disable-next-line @typescript-eslint/no-shadow
 				const transformed = esbuildTransformSync(code, esbuildOptions);
 				if (esbuildOptions.sourcefile !== filePath) {
 					transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile}"`, `"${filePath}"`);
@@ -92,6 +93,7 @@ export async function transform(
 	const transformed = await applyTransformers(code, [
 		// eslint-disable-next-line @typescript-eslint/no-shadow
 		async (code) => {
+			// eslint-disable-next-line @typescript-eslint/no-shadow
 			const transformed = await esbuildTransform(code, esbuildOptions);
 			if (esbuildOptions.sourcefile !== filePath) {
 				transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile}"`, `"${filePath}"`);
