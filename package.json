@@ -21,7 +21,8 @@
 	},
 	"scripts": {
 		"build": "pkgroll --minify",
-		"lint": "eslint --cache ."
+		"lint": "eslint --cache .",
+		"test": "tsx --no-cache ./tests/index.ts"
 	},
 	"dependencies": {
 		"esbuild": "0.14.38",
@@ -34,8 +35,12 @@
 		"@types/source-map-support": "^0.5.4",
 		"es-module-lexer": "^0.10.5",
 		"eslint": "^8.15.0",
+		"fs-require": "^1.4.0",
 		"magic-string": "^0.26.2",
+		"manten": "^0.1.0",
+		"memfs": "^3.4.6",
 		"pkgroll": "^1.2.2",
+		"tsx": "github:esbuild-kit/tsx#built/core-utils-refactor",
 		"typescript": "^4.6.4"
 	},
 	"eslintConfig": {

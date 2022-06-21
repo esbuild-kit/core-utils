@@ -48,7 +48,15 @@ export function transformSync(
 		code,
 		[
 			// eslint-disable-next-line @typescript-eslint/no-shadow
-			code => esbuildTransformSync(code, esbuildOptions),
+			(code) => {
+				const transformed = esbuildTransformSync(code, esbuildOptions);
+
+				if (esbuildOptions.sourcefile !== filePath) {
+					transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile!}"`, `"${filePath}"`);
+				}
+
+				return transformed;
+			},
 			transformDynamicImport,
 		] as const,
 	);
