@@ -41,9 +41,10 @@ export default testSuite(({ describe }) => {
 			test('transforms file with inline sourcemap string', () => {
 				expect(
 					() => transformSync(
-						`const inlineSourceMapPrefix = '\\n//# sourceMappingURL=data:application/json;base64,';${
-							fixtures.esm
-						}`,
+						`
+						const inlineSourceMapPrefix = '\\n//# sourceMappingURL=data:application/json;base64,';
+						import('fs');
+						${fixtures.esm}`,
 						'file.js',
 						{
 							format: 'cjs',
