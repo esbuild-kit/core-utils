@@ -48,7 +48,14 @@ export function transformSync(
 		code,
 		[
 			// eslint-disable-next-line @typescript-eslint/no-shadow
-			code => esbuildTransformSync(code, esbuildOptions),
+			(code) => {
+				// eslint-disable-next-line @typescript-eslint/no-shadow
+				const transformed = esbuildTransformSync(code, esbuildOptions);
+				if (esbuildOptions.sourcefile !== filePath) {
+					transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile}"`, `"${filePath}"`);
+				}
+				return transformed;
+			},
 			transformDynamicImport,
 		] as const,
 	);
@@ -85,7 +92,14 @@ export async function transform(
 
 	const transformed = await applyTransformers(code, [
 		// eslint-disable-next-line @typescript-eslint/no-shadow
-		code => esbuildTransform(code, esbuildOptions),
+		async (code) => {
+			// eslint-disable-next-line @typescript-eslint/no-shadow
+			const transformed = await esbuildTransform(code, esbuildOptions);
+			if (esbuildOptions.sourcefile !== filePath) {
+				transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile}"`, `"${filePath}"`);
+			}
+			return transformed;
+		},
 		transformDynamicImport,
 	] as const);
 
