@@ -38,8 +38,7 @@ export default testSuite(({ describe }) => {
 				);
 			});
 
-			/*
-			test('failing: transforms file with inline sourcemap string', () => {
+			test('transforms file with inline sourcemap string', () => {
 				expect(
 					() => transformSync(
 						`
@@ -53,7 +52,6 @@ export default testSuite(({ describe }) => {
 					),
 				).not.toThrow();
 			});
-			*/
 
 			// test('failing: sourcemap', () => {
 			// 	const fileName = 'file.mts';

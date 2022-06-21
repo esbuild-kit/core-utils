@@ -6,9 +6,10 @@ import {
 	version as esbuildVersion,
 } from 'esbuild';
 import { sha1 } from '../utils/sha1';
-import { sourcemap } from '../source-map';
+import { applySourceMap } from '../source-map';
 import { transformDynamicImport } from './transform-dynamic-import';
 import cache from './cache';
+import { applyTransformersSync, applyTransformers } from './apply-transformers';
 import { getEsbuildOptions } from './get-esbuild-options';
 
 export { transformDynamicImport } from './transform-dynamic-import';
@@ -25,25 +26,25 @@ export function transformSync(
 		define['import.meta.url'] = `'${pathToFileURL(filePath)}'`;
 	}
 
-	const options = getEsbuildOptions({
+	const esbuildOptions = getEsbuildOptions({
 		sourcefile: filePath,
 		define,
 		...extendOptions,
 	});
 
-	const hash = sha1(code + JSON.stringify(options) + esbuildVersion);
+	const hash = sha1(code + JSON.stringify(esbuildOptions) + esbuildVersion);
 	const cacheHit = cache.get(hash);
 	if (cacheHit) {
+		applySourceMap(cacheHit);
 		return cacheHit;
 	}
 
-	const transformed = esbuildTransformSync(code, options);
-
-	const dynamicImportTransformed = transformDynamicImport(transformed, sourcemap);
-	if (dynamicImportTransformed) {
-		transformed.code = dynamicImportTransformed.code;
-		transformed.map = dynamicImportTransformed.map;
-	}
+	const transformed = applyTransformersSync(code, [
+		// eslint-disable-next-line @typescript-eslint/no-shadow
+		code => esbuildTransformSync(code, esbuildOptions),
+		// eslint-disable-next-line @typescript-eslint/no-shadow
+		code => transformDynamicImport({ code }, true),
+	] as const);
 
 	if (transformed.warnings.length > 0) {
 		const { warnings } = transformed;
@@ -53,6 +54,8 @@ export function transformSync(
 	}
 
 	cache.set(hash, transformed);
+
+	applySourceMap(transformed);
 
 	return transformed;
 }
@@ -63,24 +66,24 @@ export async function transform(
 	filePath: string,
 	extendOptions?: TransformOptions,
 ): Promise<TransformResult> {
-	const options = getEsbuildOptions({
+	const esbuildOptions = getEsbuildOptions({
 		sourcefile: filePath,
 		...extendOptions,
 	});
 
-	const hash = sha1(code + JSON.stringify(options) + esbuildVersion);
+	const hash = sha1(code + JSON.stringify(esbuildOptions) + esbuildVersion);
 	const cacheHit = cache.get(hash);
 	if (cacheHit) {
+		applySourceMap(cacheHit);
 		return cacheHit;
 	}
 
-	const transformed = await esbuildTransform(code, options);
-
-	const dynamicImportTransformed = transformDynamicImport(transformed, sourcemap);
-	if (dynamicImportTransformed) {
-		transformed.code = dynamicImportTransformed.code;
-		transformed.map = dynamicImportTransformed.map;
-	}
+	const transformed = await applyTransformers(code, [
+		// eslint-disable-next-line @typescript-eslint/no-shadow
+		code => esbuildTransform(code, esbuildOptions),
+		// eslint-disable-next-line @typescript-eslint/no-shadow
+		code => transformDynamicImport({ code }, true),
+	] as const);
 
 	if (transformed.warnings.length > 0) {
 		const { warnings } = transformed;
@@ -90,6 +93,8 @@ export async function transform(
 	}
 
 	cache.set(hash, transformed);
+
+	applySourceMap(transformed);
 
 	return transformed;
 }
