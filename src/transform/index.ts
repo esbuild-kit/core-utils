@@ -6,7 +6,6 @@ import {
 	version as esbuildVersion,
 } from 'esbuild';
 import { sha1 } from '../utils/sha1';
-import { applySourceMap } from '../source-map';
 import { transformDynamicImport } from './transform-dynamic-import';
 import cache from './cache';
 import { applyTransformersSync, applyTransformers } from './apply-transformers';
@@ -14,13 +13,17 @@ import { getEsbuildOptions } from './get-esbuild-options';
 
 export { transformDynamicImport } from './transform-dynamic-import';
 
+type Transformed = {
+	code: string;
+	map: string;
+};
+
 // Used by cjs-loader
 export function transformSync(
 	code: string,
 	filePath: string,
 	extendOptions?: TransformOptions,
-	sourcemaps?: Map<string, string>,
-): string {
+): Transformed {
 	const define: { [key: string]: string } = {};
 
 	if (!(filePath.endsWith('.cjs') || filePath.endsWith('.cts'))) {
@@ -38,7 +41,7 @@ export function transformSync(
 	const cacheHit = cache.get(hash);
 
 	if (cacheHit) {
-		return applySourceMap(cacheHit, filePath, sourcemaps);
+		return cacheHit;
 	}
 
 	const transformed = applyTransformersSync(
@@ -59,7 +62,7 @@ export function transformSync(
 
 	cache.set(hash, transformed);
 
-	return applySourceMap(transformed, filePath, sourcemaps);
+	return transformed;
 }
 
 // Used by esm-loader
@@ -67,8 +70,7 @@ export async function transform(
 	code: string,
 	filePath: string,
 	extendOptions?: TransformOptions,
-	sourcemaps?: Map<string, string>,
-): Promise<string> {
+): Promise<Transformed> {
 	const esbuildOptions = getEsbuildOptions({
 		format: 'esm',
 		sourcefile: filePath,
@@ -78,7 +80,7 @@ export async function transform(
 	const hash = sha1(code + JSON.stringify(esbuildOptions) + esbuildVersion);
 	const cacheHit = cache.get(hash);
 	if (cacheHit) {
-		return applySourceMap(cacheHit, filePath, sourcemaps);
+		return cacheHit;
 	}
 
 	const transformed = await applyTransformers(code, [
@@ -96,5 +98,5 @@ export async function transform(
 
 	cache.set(hash, transformed);
 
-	return applySourceMap(transformed, filePath, sourcemaps);
+	return transformed;
 }
