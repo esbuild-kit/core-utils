@@ -8,7 +8,7 @@ import {
 } from 'esbuild';
 import { transformDynamicImport } from '../transform-dynamic-import';
 import { sha1 } from '../utils/sha1';
-import { hasNativeSourceMapSupport } from '../utils/has-native-source-map-support';
+import { hasNativeSourceMapSupport } from '../source-map';
 import cache from './cache';
 
 const nodeVersion = process.versions.node;
