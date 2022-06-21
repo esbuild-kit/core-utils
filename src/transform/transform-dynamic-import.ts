@@ -3,6 +3,9 @@ import type { EncodedSourceMap } from '@ampproject/remapping';
 import { parseEsm } from '../utils/es-module-lexer';
 import { applySourceMap } from '../source-map';
 
+// Necessary for types to build correctly
+export type { EncodedSourceMap };
+
 const checkEsModule = `.then((mod)=>{
 	const exports = Object.keys(mod);
 	if(

@@ -1,4 +1,5 @@
 import sourceMapSupport from 'source-map-support';
+import type { SourceMapInput } from '@ampproject/remapping';
 
 const hasNativeSourceMapSupport = (
 	/**
@@ -44,6 +45,6 @@ export function applySourceMap(
 
 	if (hasNativeSourceMapSupport) {
 		transformed.code = transformed.code + inlineSourceMapPrefix + Buffer.from(mapString, 'utf8').toString('base64');
-		transformed.map = undefined;
+		transformed.map = '';
 	}
 }
