@@ -1,6 +1,6 @@
 import sourceMapSupport from 'source-map-support';
 
-export const hasNativeSourceMapSupport = (
+const hasNativeSourceMapSupport = (
 	/**
 	 * Check if native source maps are supported by seeing if the api is available
 	 * https://nodejs.org/dist/latest-v18.x/docs/api/process.html#processsetsourcemapsenabledval
@@ -15,6 +15,8 @@ export const hasNativeSourceMapSupport = (
 	 */
 	&& typeof Error.prepareStackTrace !== 'function'
 );
+
+export const sourcemap = hasNativeSourceMapSupport ? 'inline' : true;
 
 export function installSourceMapSupport() {
 	if (hasNativeSourceMapSupport) {
