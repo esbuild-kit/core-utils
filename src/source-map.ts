@@ -16,8 +16,6 @@ const hasNativeSourceMapSupport = (
 	&& typeof Error.prepareStackTrace !== 'function'
 );
 
-export const sourcemap = hasNativeSourceMapSupport ? 'inline' : true;
-
 export function installSourceMapSupport() {
 	if (hasNativeSourceMapSupport) {
 		process.setSourceMapsEnabled(true);
@@ -35,4 +33,17 @@ export function installSourceMapSupport() {
 	});
 
 	return sourcemaps;
+}
+
+const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
+
+export function applySourceMap(
+	transformed: { code: string; map: SourceMapInput },
+) {
+	const mapString = (typeof transformed.map === 'string' ? transformed.map : transformed.map.toString());
+
+	if (hasNativeSourceMapSupport) {
+		transformed.code = transformed.code + inlineSourceMapPrefix + Buffer.from(mapString, 'utf8').toString('base64');
+		transformed.map = undefined;
+	}
 }

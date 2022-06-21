@@ -1,6 +1,7 @@
 import MagicString from 'magic-string';
-import remapping from '@ampproject/remapping';
+import type { EncodedSourceMap } from '@ampproject/remapping';
 import { parseEsm } from '../utils/es-module-lexer';
+import { applySourceMap } from '../source-map';
 
 const checkEsModule = `.then((mod)=>{
 	const exports = Object.keys(mod);
@@ -9,14 +10,11 @@ const checkEsModule = `.then((mod)=>{
 	){
 		return mod.default
 	}
-
 	return mod
 })`.replace(/[\n\t]+/g, '');
 
-const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
-
 export function transformDynamicImport(
-	{ code, map }: { code: string; map?: string },
+	{ code }: { code: string },
 	sourcemap?: boolean | 'inline',
 ) {
 	code = code.toString();
@@ -24,14 +22,6 @@ export function transformDynamicImport(
 	// Naive check
 	if (!code.includes('import')) {
 		return;
-	}
-
-	if (sourcemap === 'inline') {
-		const sourceMapIndex = code.indexOf(inlineSourceMapPrefix);
-		const inlineSourceMap = code.slice(sourceMapIndex + inlineSourceMapPrefix.length);
-
-		map = Buffer.from(inlineSourceMap, 'base64').toString();
-		code = code.slice(0, sourceMapIndex);
 	}
 
 	const [imports] = parseEsm(code);
@@ -48,23 +38,14 @@ export function transformDynamicImport(
 		}
 	}
 
-	code = magicString.toString();
+	const transformed = {
+		code: magicString.toString(),
+		map: magicString.generateMap({ hires: true }) as EncodedSourceMap,
+	};
 
-	if (sourcemap && map) {
-		const generatedMap = magicString.generateMap({ hires: true });
-
-		map = remapping([generatedMap.toString(), map], () => null).toString();
-
-		if (sourcemap === 'inline') {
-			code += inlineSourceMapPrefix + Buffer.from(map, 'utf8').toString('base64');
-			map = '';
-		}
-	} else {
-		map = '';
+	if (!sourcemap) {
+		applySourceMap(transformed);
 	}
 
-	return {
-		code,
-		map,
-	};
+	return transformed;
 }

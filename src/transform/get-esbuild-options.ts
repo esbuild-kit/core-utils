@@ -1,6 +1,5 @@
 import path from 'path';
 import type { TransformOptions } from 'esbuild';
-import { sourcemap } from '../source-map';
 
 const nodeVersion = process.versions.node;
 
@@ -14,7 +13,7 @@ export const getEsbuildOptions = (
 		// https://github.com/evanw/esbuild/blob/4a07b17adad23e40cbca7d2f8931e8fb81b47c33/internal/bundler/bundler.go#L158
 		loader: 'default',
 
-		sourcemap,
+		sourcemap: true,
 
 		/**
 		 * Smaller output for cache and marginal performance improvement:
