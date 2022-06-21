@@ -39,12 +39,16 @@ export function installSourceMapSupport() {
 const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
 
 export function applySourceMap(
-	transformed: { code: string; map: SourceMapInput },
+	{ code, map }: { code: string; map: SourceMapInput },
+	filePath: string,
+	sourcemaps?: Map<string, string>,
 ) {
-	const mapString = (typeof transformed.map === 'string' ? transformed.map : transformed.map.toString());
+	const mapString = (typeof map === 'string' ? map : map.toString());
 
-	if (hasNativeSourceMapSupport) {
-		transformed.code = transformed.code + inlineSourceMapPrefix + Buffer.from(mapString, 'utf8').toString('base64');
-		transformed.map = '';
+	if (sourcemaps) {
+		sourcemaps.set(filePath, mapString);
+		return code;
 	}
+
+	return code + inlineSourceMapPrefix + Buffer.from(mapString, 'utf8').toString('base64');
 }
