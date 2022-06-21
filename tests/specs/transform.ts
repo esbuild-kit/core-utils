@@ -38,13 +38,13 @@ export default testSuite(({ describe }) => {
 				);
 			});
 
-			/*
-			test('failing: transforms file with inline sourcemap string', () => {
+			test('transforms file with inline sourcemap string', () => {
 				expect(
 					() => transformSync(
-						`const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';${
-							fixtures.esm
-						}`,
+						`
+						const inlineSourceMapPrefix = '\\n//# sourceMappingURL=data:application/json;base64,';
+						import('fs');
+						${fixtures.esm}`,
 						'file.js',
 						{
 							format: 'cjs',
@@ -52,7 +52,6 @@ export default testSuite(({ describe }) => {
 					),
 				).not.toThrow();
 			});
-			*/
 
 			// test('failing: sourcemap', () => {
 			// 	const fileName = 'file.mts';
