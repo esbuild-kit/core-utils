@@ -63,6 +63,8 @@ export default testSuite(({ describe }) => {
 			// 		},
 			// 	);
 
+			// 	expect(transformed.map).not.toBe('');
+
 			// 	const map = JSON.parse(transformed.map);
 
 			// 	expect(map.sources.length).toBe(1);
