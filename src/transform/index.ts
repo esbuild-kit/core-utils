@@ -5,11 +5,13 @@ import {
 	transformSync as esbuildTransformSync,
 	version as esbuildVersion,
 } from 'esbuild';
-import { transformDynamicImport } from '../transform-dynamic-import';
 import { sha1 } from '../utils/sha1';
 import { sourcemap } from '../source-map';
+import { transformDynamicImport } from './transform-dynamic-import';
 import cache from './cache';
 import { getEsbuildOptions } from './get-esbuild-options';
+
+export { transformDynamicImport } from './transform-dynamic-import';
 
 // Used by cjs-loader
 export function transformSync(
