@@ -38,7 +38,7 @@ export default testSuite(({ describe }) => {
 				);
 			});
 
-			test('failing: transforms file with inline sourcemap string', () => {
+			test('transforms file with inline sourcemap string', () => {
 				expect(
 					() => transformSync(
 						`const inlineSourceMapPrefix = '\\n//# sourceMappingURL=data:application/json;base64,';${
