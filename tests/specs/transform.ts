@@ -53,23 +53,23 @@ export default testSuite(({ describe }) => {
 				).not.toThrow();
 			});
 
-			// test('failing: sourcemap', () => {
-			// 	const fileName = 'file.mts';
-			// 	const transformed = transformSync(
-			// 		fixtures.ts,
-			// 		fileName,
-			// 		{
-			// 			format: 'esm',
-			// 		},
-			// 	);
+			test('sourcemap file', () => {
+				const fileName = 'file.mts';
+				const transformed = transformSync(
+					fixtures.ts,
+					fileName,
+					{
+						format: 'esm',
+					},
+				);
 
-			// 	expect(transformed.map).not.toBe('');
+				expect(transformed.map).not.toBe('');
 
-			// 	const map = JSON.parse(transformed.map);
+				const map = JSON.parse(transformed.map);
 
-			// 	expect(map.sources.length).toBe(1);
-			// 	expect(map.sources[0]).toBe(fileName);
-			// });
+				expect(map.sources.length).toBe(1);
+				expect(map.sources[0]).toBe(fileName);
+			});
 		});
 
 		describe('async', ({ test }) => {
@@ -84,6 +84,24 @@ export default testSuite(({ describe }) => {
 
 				const imported = await import(base64Module(transformed.code));
 				expect(JSON.stringify(imported)).toMatch('{"default":"default value","named":"named"}');
+			});
+
+			test('sourcemap file', async () => {
+				const fileName = 'file.cts';
+				const transformed = await transform(
+					fixtures.ts,
+					fileName,
+					{
+						format: 'esm',
+					},
+				);
+
+				expect(transformed.map).not.toBe('');
+
+				const map = JSON.parse(transformed.map);
+
+				expect(map.sources.length).toBe(1);
+				expect(map.sources[0]).toBe(fileName);
 			});
 		});
 	});
