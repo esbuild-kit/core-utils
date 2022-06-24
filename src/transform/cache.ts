@@ -28,9 +28,7 @@ class FileCache extends Map<string, TransformResult> {
 	constructor() {
 		super();
 
-		if (!fs.existsSync(this.cacheDirectory)) {
-			fs.mkdirSync(this.cacheDirectory);
-		}
+		fs.mkdirSync(this.cacheDirectory, { recursive: true });
 
 		this.cacheFiles = fs.readdirSync(this.cacheDirectory).map((fileName) => {
 			const [time, key] = fileName.split('-');
