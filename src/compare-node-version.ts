@@ -1,4 +1,4 @@
-export type Version = [number, number, number];
+type Version = [number, number, number];
 
 const nodeVersion = process.versions.node.split('.').map(Number) as Version;
 
