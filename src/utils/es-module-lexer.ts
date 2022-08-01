@@ -1,5 +1,5 @@
 import { parse as parseWasm, init } from 'es-module-lexer';
-import { parse as parseJs } from 'es-module-lexer/js'; // eslint-disable-line import/no-unresolved
+import { parse as parseJs } from 'es-module-lexer/js';
 
 let wasmParserInitialized = false;
 
