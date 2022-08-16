@@ -26,7 +26,7 @@
 		"test": "tsx --no-cache ./tests/index.ts"
 	},
 	"dependencies": {
-		"esbuild": "^0.15.3",
+		"esbuild": "~0.15.4",
 		"source-map-support": "^0.5.21"
 	},
 	"devDependencies": {
@@ -41,7 +41,7 @@
 		"manten": "^0.2.1",
 		"memfs": "^3.4.7",
 		"pkgroll": "^1.3.1",
-		"tsx": "^3.8.2",
+		"tsx": "^3.8.0",
 		"typescript": "^4.7.4"
 	},
 	"eslintConfig": {
