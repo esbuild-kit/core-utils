@@ -26,7 +26,7 @@
 		"test": "tsx --no-cache ./tests/index.ts"
 	},
 	"dependencies": {
-		"esbuild": "~0.14.51",
+		"esbuild": "~0.15.4",
 		"source-map-support": "^0.5.21"
 	},
 	"devDependencies": {
