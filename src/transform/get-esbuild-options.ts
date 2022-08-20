@@ -19,14 +19,8 @@ export const getEsbuildOptions = (
 		 * Smaller output for cache and marginal performance improvement:
 		 * https://twitter.com/evanwallace/status/1396336348366180359?s=20
 		 */
-		/**
-		 * Disabled until esbuild supports names in source maps:
-		 * https://github.com/evanw/esbuild/issues/1296
-		 */
-		// minify: true,
+		minify: true,
 		keepNames: true,
-		minifySyntax: true,
-		minifyWhitespace: true,
 
 		...extendOptions,
 	};
