@@ -73,6 +73,7 @@ export default testSuite(({ describe }) => {
 
 				expect(map.sources.length).toBe(1);
 				expect(map.sources[0]).toBe(fileName);
+				expect(map.names).toStrictEqual(['file_default', 'named', 'functionName', '__name']);
 			});
 		});
 
@@ -110,6 +111,7 @@ export default testSuite(({ describe }) => {
 
 				expect(map.sources.length).toBe(1);
 				expect(map.sources[0]).toBe(fileName);
+				expect(map.names).toStrictEqual(['file_default', 'named', 'functionName', '__name']);
 			});
 		});
 	});
