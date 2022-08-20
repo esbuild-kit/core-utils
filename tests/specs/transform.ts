@@ -9,11 +9,13 @@ const fixtures = {
 	ts: `
 	export default 'default value' as string;
 	export const named: string = 'named';
+	export const functionName: string = (function named() {}).name;
 	`,
 
 	esm: `
 	export default 'default value';
 	export const named = 'named';
+	export const functionName = (function named() {}).name;
 	`,
 };
 
@@ -33,9 +35,11 @@ export default testSuite(({ describe }) => {
 					'/file.js': transformed.code,
 				}));
 
-				expect(JSON.stringify(fsRequire('/file.js'))).toBe(
-					'{"default":"default value","named":"named"}',
-				);
+				expect(fsRequire('/file.js')).toStrictEqual({
+					default: 'default value',
+					functionName: 'named',
+					named: 'named',
+				});
 			});
 
 			test('transforms file with inline sourcemap string', () => {
@@ -83,7 +87,11 @@ export default testSuite(({ describe }) => {
 				);
 
 				const imported = await import(base64Module(transformed.code));
-				expect(JSON.stringify(imported)).toMatch('{"default":"default value","named":"named"}');
+				expect({ ...imported }).toStrictEqual({
+					default: 'default value',
+					functionName: 'named',
+					named: 'named',
+				});
 			});
 
 			test('sourcemap file', async () => {

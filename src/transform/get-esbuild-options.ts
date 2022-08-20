@@ -23,7 +23,8 @@ export const getEsbuildOptions = (
 		 * Disabled until esbuild supports names in source maps:
 		 * https://github.com/evanw/esbuild/issues/1296
 		 */
-		// minify: true, keepNames: true,
+		// minify: true,
+		keepNames: true,
 		minifySyntax: true,
 		minifyWhitespace: true,
 
