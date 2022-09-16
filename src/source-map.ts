@@ -3,7 +3,7 @@ import type { SourceMapInput } from '@ampproject/remapping';
 
 const hasNativeSourceMapSupport = (
 	/**
-	 * Check if native source maps are supported by seeing if the api is available
+	 * Check if native source maps are supported by seeing if the API is available
 	 * https://nodejs.org/dist/latest-v18.x/docs/api/process.html#processsetsourcemapsenabledval
 	 */
 	'setSourceMapsEnabled' in process
