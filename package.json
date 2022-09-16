@@ -29,6 +29,7 @@
 	"scripts": {
 		"build": "pkgroll --minify",
 		"lint": "eslint --cache .",
+		"type-check": "tsc --noEmit",
 		"test": "pnpm build && tsx --no-cache tests",
 		"dev": "tsx watch --no-cache --conditions=development tests"
 	},
@@ -49,7 +50,7 @@
 		"memfs": "^3.4.7",
 		"pkgroll": "^1.4.0",
 		"tsx": "^3.8.2",
-		"typescript": "^4.7.4"
+		"typescript": "^4.8.3"
 	},
 	"eslintConfig": {
 		"extends": "@pvtnbr"
