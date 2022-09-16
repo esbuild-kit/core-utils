@@ -18,8 +18,12 @@ export const getEsbuildOptions = (
 		/**
 		 * Smaller output for cache and marginal performance improvement:
 		 * https://twitter.com/evanwallace/status/1396336348366180359?s=20
+		 *
+		 * minifyIdentifiers is disabled because debuggers don't use the
+		 * `names` property from the source map
 		 */
-		minify: true,
+		minifySyntax: true,
+		minifyWhitespace: true,
 		keepNames: true,
 
 		...extendOptions,
