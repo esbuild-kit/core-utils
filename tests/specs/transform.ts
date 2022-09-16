@@ -1,7 +1,7 @@
 import { testSuite, expect } from 'manten';
 import { createFsRequire } from 'fs-require';
 import { Volume } from 'memfs';
-import { transform, transformSync } from '../../dist/index.js';
+import { transform, transformSync } from '#esbuild-kit/core-utils';
 
 const base64Module = (code: string) => `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`;
 

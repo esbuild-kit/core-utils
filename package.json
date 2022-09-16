@@ -19,11 +19,18 @@
 		"types": "./dist/index.d.ts",
 		"default": "./dist/index.js"
 	},
+	"imports": {
+		"#esbuild-kit/core-utils": {
+			"types": "./src/index.ts",
+			"development": "./src/index.ts",
+			"default": "./dist/index.mjs"
+		}
+	},
 	"scripts": {
 		"build": "pkgroll --minify",
 		"lint": "eslint --cache .",
-		"pretest": "npm run build",
-		"test": "tsx --no-cache ./tests/index.ts"
+		"test": "pnpm build && tsx --no-cache tests",
+		"dev": "tsx watch --no-cache --conditions=development tests"
 	},
 	"dependencies": {
 		"esbuild": "~0.15.4",
