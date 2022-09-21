@@ -21,8 +21,10 @@ export const getEsbuildOptions = (
 		 *
 		 * minifyIdentifiers is disabled because debuggers don't use the
 		 * `names` property from the source map
+		 *
+		 * minifySyntax is disabled because it does some tree-shaking
+		 * eg. unused try-catch error variable
 		 */
-		minifySyntax: true,
 		minifyWhitespace: true,
 		keepNames: true,
 
