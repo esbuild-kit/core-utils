@@ -7,12 +7,22 @@ const base64Module = (code: string) => `data:text/javascript;base64,${Buffer.fro
 
 const fixtures = {
 	ts: `
+	try {
+		const unusedVariable1 = 1;
+	} catch (unusedError) {
+		const unusedVariable2 = 2;
+	}
 	export default 'default value' as string;
 	export const named: string = 'named';
 	export const functionName: string = (function named() {}).name;
 	`,
 
 	esm: `
+	try {
+		const unusedVariable1 = 1;
+	} catch (unusedError) {
+		const unusedVariable2 = 2;
+	}
 	export default 'default value';
 	export const named = 'named';
 	export const functionName = (function named() {}).name;
@@ -26,10 +36,12 @@ export default testSuite(({ describe }) => {
 				const transformed = transformSync(
 					fixtures.esm,
 					'file.js',
-					{
-						format: 'cjs',
-					},
+					{ format: 'cjs' },
 				);
+
+				// For debuggers
+				expect(transformed.code).toMatch('unusedVariable1');
+				expect(transformed.code).toMatch('unusedVariable2');
 
 				const fsRequire = createFsRequire(Volume.fromJSON({
 					'/file.js': transformed.code,
@@ -50,9 +62,7 @@ export default testSuite(({ describe }) => {
 						import('fs');
 						${fixtures.esm}`,
 						'file.js',
-						{
-							format: 'cjs',
-						},
+						{ format: 'cjs' },
 					),
 				).not.toThrow();
 			});
@@ -62,9 +72,7 @@ export default testSuite(({ describe }) => {
 				const transformed = transformSync(
 					fixtures.ts,
 					fileName,
-					{
-						format: 'esm',
-					},
+					{ format: 'esm' },
 				);
 
 				expect(transformed.map).not.toBe('');
@@ -73,7 +81,7 @@ export default testSuite(({ describe }) => {
 
 				expect(map.sources.length).toBe(1);
 				expect(map.sources[0]).toBe(fileName);
-				expect(map.names).toStrictEqual([]);
+				expect(map.names).toStrictEqual(['named']);
 			});
 		});
 
@@ -82,10 +90,12 @@ export default testSuite(({ describe }) => {
 				const transformed = await transform(
 					fixtures.ts,
 					'file.ts',
-					{
-						format: 'esm',
-					},
+					{ format: 'esm' },
 				);
+
+				// For debuggers
+				expect(transformed.code).toMatch('unusedVariable1');
+				expect(transformed.code).toMatch('unusedVariable2');
 
 				const imported = await import(base64Module(transformed.code));
 				expect({ ...imported }).toStrictEqual({
@@ -100,9 +110,7 @@ export default testSuite(({ describe }) => {
 				const transformed = await transform(
 					fixtures.ts,
 					fileName,
-					{
-						format: 'esm',
-					},
+					{ format: 'esm' },
 				);
 
 				expect(transformed.map).not.toBe('');
@@ -111,7 +119,7 @@ export default testSuite(({ describe }) => {
 
 				expect(map.sources.length).toBe(1);
 				expect(map.sources[0]).toBe(fileName);
-				expect(map.names).toStrictEqual([]);
+				expect(map.names).toStrictEqual(['named']);
 			});
 		});
 	});
