@@ -7,6 +7,8 @@ const base64Module = (code: string) => `data:text/javascript;base64,${Buffer.fro
 
 const fixtures = {
 	ts: `
+	const __filename = 'filename';
+	const __dirname = 'dirname';
 	try {
 		const unusedVariable1 = 1;
 	} catch (unusedError) {
@@ -18,6 +20,8 @@ const fixtures = {
 	`,
 
 	esm: `
+	const __filename = 'filename';
+	const __dirname = 'dirname';
 	try {
 		const unusedVariable1 = 1;
 	} catch (unusedError) {
