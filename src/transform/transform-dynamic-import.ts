@@ -38,9 +38,7 @@ export function transformDynamicImport(
 	const magicString = new MagicString(code);
 
 	for (const dynamicImport of dynamicImports) {
-		if (dynamicImport.d > -1) {
-			magicString.appendRight(dynamicImport.se, checkEsModule);
-		}
+		magicString.appendRight(dynamicImport.se, checkEsModule);
 	}
 
 	return {
