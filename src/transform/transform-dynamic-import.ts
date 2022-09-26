@@ -29,9 +29,15 @@ export function transformDynamicImport(
 		return;
 	}
 
+	const dynamicImports = imports.filter(maybeDynamic => maybeDynamic.d > -1);
+
+	if (dynamicImports.length === 0) {
+		return;
+	}
+
 	const magicString = new MagicString(code);
 
-	for (const dynamicImport of imports) {
+	for (const dynamicImport of dynamicImports) {
 		if (dynamicImport.d > -1) {
 			magicString.appendRight(dynamicImport.se, checkEsModule);
 		}
