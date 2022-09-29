@@ -16,6 +16,7 @@ const checkEsModule = `.then((mod)=>{
 })`.replace(/[\n\t]+/g, '');
 
 export function transformDynamicImport(
+	filename: string,
 	code: string,
 ) {
 	// Naive check
@@ -23,13 +24,7 @@ export function transformDynamicImport(
 		return;
 	}
 
-	const [imports] = parseEsm(code);
-
-	if (imports.length === 0) {
-		return;
-	}
-
-	const dynamicImports = imports.filter(maybeDynamic => maybeDynamic.d > -1);
+	const dynamicImports = parseEsm(code)[0].filter(maybeDynamic => maybeDynamic.d > -1);
 
 	if (dynamicImports.length === 0) {
 		return;
@@ -43,6 +38,9 @@ export function transformDynamicImport(
 
 	return {
 		code: magicString.toString(),
-		map: magicString.generateMap({ hires: true }) as EncodedSourceMap,
+		map: magicString.generateMap({
+			source: filename,
+			hires: true,
+		}) as EncodedSourceMap,
 	};
 }
