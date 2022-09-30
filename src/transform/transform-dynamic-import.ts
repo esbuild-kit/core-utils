@@ -16,6 +16,7 @@ const checkEsModule = `.then((mod)=>{
 })`.replace(/[\n\t]+/g, '');
 
 export function transformDynamicImport(
+	filename: string,
 	code: string,
 ) {
 	// Naive check
@@ -23,22 +24,23 @@ export function transformDynamicImport(
 		return;
 	}
 
-	const [imports] = parseEsm(code);
+	const dynamicImports = parseEsm(code)[0].filter(maybeDynamic => maybeDynamic.d > -1);
 
-	if (imports.length === 0) {
+	if (dynamicImports.length === 0) {
 		return;
 	}
 
 	const magicString = new MagicString(code);
 
-	for (const dynamicImport of imports) {
-		if (dynamicImport.d > -1) {
-			magicString.appendRight(dynamicImport.se, checkEsModule);
-		}
+	for (const dynamicImport of dynamicImports) {
+		magicString.appendRight(dynamicImport.se, checkEsModule);
 	}
 
 	return {
 		code: magicString.toString(),
-		map: magicString.generateMap({ hires: true }) as EncodedSourceMap,
+		map: magicString.generateMap({
+			source: filename,
+			hires: true,
+		}) as EncodedSourceMap,
 	};
 }
