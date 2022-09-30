@@ -18,7 +18,10 @@ type TransformerResult = Transformed | undefined;
 
 type Transformer<
 	Result extends MaybePromise<TransformerResult>
-> = (code: string) => Result;
+> = (
+	code: string,
+	filename: string,
+) => Result;
 
 type Results<
 	Array_ extends Transformer<MaybePromise<TransformerResult>>[]
@@ -35,6 +38,7 @@ type AddSourceMap<T> = Omit<T, 'map'> & { map: string };
 export function applyTransformersSync<
 	T extends Readonly<Transformer<TransformerResult>[]>,
 >(
+	filename: string,
 	code: string,
 	transformers: T,
 ) {
@@ -45,7 +49,7 @@ export function applyTransformersSync<
 	};
 
 	for (const transformer of transformers) {
-		const transformed = transformer(result.code);
+		const transformed = transformer(filename, result.code);
 
 		if (transformed) {
 			Object.assign(result, transformed);
@@ -65,6 +69,7 @@ export function applyTransformersSync<
 export async function applyTransformers<
 	T extends Readonly<Transformer<MaybePromise<TransformerResult>>[]>,
 >(
+	filename: string,
 	code: string,
 	transformers: T,
 ) {
@@ -75,7 +80,7 @@ export async function applyTransformers<
 	};
 
 	for (const transformer of transformers) {
-		const transformed = await transformer(result.code);
+		const transformed = await transformer(filename, result.code);
 
 		if (transformed) {
 			Object.assign(result, transformed);
