@@ -34,7 +34,7 @@
 		"dev": "tsx watch --no-cache --conditions=development tests"
 	},
 	"dependencies": {
-		"esbuild": "~0.15.9",
+		"esbuild": "~0.15.10",
 		"source-map-support": "^0.5.21"
 	},
 	"devDependencies": {
