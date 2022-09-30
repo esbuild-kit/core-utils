@@ -16,7 +16,7 @@ const checkEsModule = `.then((mod)=>{
 })`.replace(/[\n\t]+/g, '');
 
 export function transformDynamicImport(
-	filename: string,
+	filePath: string,
 	code: string,
 ) {
 	// Naive check
@@ -39,7 +39,7 @@ export function transformDynamicImport(
 	return {
 		code: magicString.toString(),
 		map: magicString.generateMap({
-			source: filename,
+			source: filePath,
 			hires: true,
 		}) as EncodedSourceMap,
 	};
