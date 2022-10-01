@@ -4,11 +4,10 @@ import { Volume } from 'memfs';
 import {
 	transformSync,
 	installSourceMapSupport,
-	applySourceMap,
 } from '#esbuild-kit/core-utils';
 
 // Native source maps disabled in ./tests/index.ts
-const sourcemaps = installSourceMapSupport();
+const applySourceMap = installSourceMapSupport();
 
 export default testSuite(({ describe }) => {
 	describe('source map', ({ test }) => {
@@ -24,7 +23,6 @@ export default testSuite(({ describe }) => {
 				'/file.mts': applySourceMap(
 					transformed,
 					`fs-require://2/${fileName}`,
-					sourcemaps,
 				),
 			}));
 
