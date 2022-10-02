@@ -1,5 +1,6 @@
 import remapping from '@ampproject/remapping';
 import type { SourceMapInput } from '@ampproject/remapping';
+import type SourceMap from '@ampproject/remapping/dist/types/source-map';
 
 type MaybePromise<T> = T | Promise<T>;
 
@@ -33,7 +34,7 @@ type Results<
 	);
 };
 
-type AddSourceMap<T> = Omit<T, 'map'> & { map: string };
+type AddSourceMap<T> = Omit<T, 'map'> & { map: SourceMap };
 
 export function applyTransformersSync<
 	T extends Readonly<Transformer<TransformerResult>[]>,
@@ -43,10 +44,7 @@ export function applyTransformersSync<
 	transformers: T,
 ) {
 	const maps: SourceMapInput[] = [];
-	const result = {
-		code,
-		map: '',
-	};
+	const result = { code };
 
 	for (const transformer of transformers) {
 		const transformed = transformer(filePath, result.code);
@@ -57,13 +55,10 @@ export function applyTransformersSync<
 		}
 	}
 
-	result.map = (
-		maps.length > 1
-			? remapping(maps, () => null).toString()
-			: maps[0].toString()
-	);
-
-	return result as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
+	return {
+		...result,
+		map: remapping(maps, () => null),
+	} as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
 }
 
 export async function applyTransformers<
@@ -74,10 +69,7 @@ export async function applyTransformers<
 	transformers: T,
 ) {
 	const maps: SourceMapInput[] = [];
-	const result = {
-		code,
-		map: '',
-	};
+	const result = { code };
 
 	for (const transformer of transformers) {
 		const transformed = await transformer(filePath, result.code);
@@ -88,11 +80,8 @@ export async function applyTransformers<
 		}
 	}
 
-	result.map = (
-		maps.length > 1
-			? remapping(maps, () => null).toString()
-			: maps[0].toString()
-	);
-
-	return result as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
+	return {
+		...result,
+		map: remapping(maps, () => null),
+	 } as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
 }
