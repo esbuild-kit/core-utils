@@ -8,22 +8,21 @@ import {
 import { sha1 } from '../utils/sha1';
 import { transformDynamicImport } from './transform-dynamic-import';
 import cache from './cache';
-import { applyTransformersSync, applyTransformers } from './apply-transformers';
+import {
+	applyTransformersSync,
+	applyTransformers,
+	type FinalTransform,
+} from './apply-transformers';
 import { getEsbuildOptions } from './get-esbuild-options';
 
 export { transformDynamicImport } from './transform-dynamic-import';
-
-type Transformed = {
-	code: string;
-	map: string;
-};
 
 // Used by cjs-loader
 export function transformSync(
 	code: string,
 	filePath: string,
 	extendOptions?: TransformOptions,
-): Transformed {
+): FinalTransform {
 	const define: { [key: string]: string } = {};
 
 	if (!(filePath.endsWith('.cjs') || filePath.endsWith('.cts'))) {
@@ -78,7 +77,7 @@ export async function transform(
 	code: string,
 	filePath: string,
 	extendOptions?: TransformOptions,
-): Promise<Transformed> {
+): Promise<FinalTransform> {
 	const esbuildOptions = getEsbuildOptions({
 		format: 'esm',
 		sourcefile: filePath,
