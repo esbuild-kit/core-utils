@@ -1,6 +1,6 @@
 import sourceMapSupport from 'source-map-support';
 import type { RawSourceMap } from 'source-map';
-import type { FinalTransform } from './transform/apply-transformers';
+import type { Transformed } from './transform/apply-transformers';
 
 const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
 
@@ -26,7 +26,7 @@ export function installSourceMapSupport() {
 		process.setSourceMapsEnabled(true);
 
 		return (
-			{ code, map }: FinalTransform,
+			{ code, map }: Transformed,
 		) => (
 			code
 			+ inlineSourceMapPrefix
@@ -45,7 +45,7 @@ export function installSourceMapSupport() {
 	});
 
 	return (
-		{ code, map }: FinalTransform,
+		{ code, map }: Transformed,
 		filePath: string,
 	) => {
 		sourcemaps.set(filePath, map);

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { readJsonFile } from '../utils/read-json-file';
-import type { FinalTransform } from './apply-transformers';
+import type { Transformed } from './apply-transformers';
 
 const getTime = () => Math.floor(Date.now() / 1e8);
 
@@ -116,6 +116,6 @@ class FileCache<ReturnType> extends Map<string, ReturnType> {
 
 export default (
 	process.env.ESBK_DISABLE_CACHE
-		? new Map<string, FinalTransform>()
-		: new FileCache<FinalTransform>()
+		? new Map<string, Transformed>()
+		: new FileCache<Transformed>()
 );

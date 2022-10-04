@@ -11,7 +11,7 @@ import cache from './cache';
 import {
 	applyTransformersSync,
 	applyTransformers,
-	type FinalTransform,
+	type Transformed,
 } from './apply-transformers';
 import { getEsbuildOptions } from './get-esbuild-options';
 
@@ -22,7 +22,7 @@ export function transformSync(
 	code: string,
 	filePath: string,
 	extendOptions?: TransformOptions,
-): FinalTransform {
+): Transformed {
 	const define: { [key: string]: string } = {};
 
 	if (!(filePath.endsWith('.cjs') || filePath.endsWith('.cts'))) {
@@ -77,7 +77,7 @@ export async function transform(
 	code: string,
 	filePath: string,
 	extendOptions?: TransformOptions,
-): Promise<FinalTransform> {
+): Promise<Transformed> {
 	const esbuildOptions = getEsbuildOptions({
 		format: 'esm',
 		sourcefile: filePath,

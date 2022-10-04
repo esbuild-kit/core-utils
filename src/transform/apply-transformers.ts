@@ -12,19 +12,17 @@ type IntersectionArray<T extends unknown[]> = (
 		: unknown
 );
 
-type Transformed = {
+type TransformerResult = {
 	code: string;
 	map: SourceMap;
-};
-
-type TransformerResult = Transformed | undefined;
+} | undefined;
 
 type Transformer<
-	Result extends MaybePromise<TransformerResult>
+	ReturnType extends MaybePromise<TransformerResult>
 > = (
 	filePath: string,
 	code: string,
-) => Result;
+) => ReturnType;
 
 type Results<
 	Array_ extends Transformer<MaybePromise<TransformerResult>>[]
@@ -38,7 +36,7 @@ type Results<
 
 type AddSourceMap<T> = Omit<T, 'map'> & { map: RawSourceMap };
 
-export type FinalTransform = {
+export type Transformed = {
 	code: string;
 	map: RawSourceMap;
 };
