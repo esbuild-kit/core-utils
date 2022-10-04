@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import type { TransformResult } from 'esbuild';
 import { readJsonFile } from '../utils/read-json-file';
+import type { Transformed } from './apply-transformers';
 
 const getTime = () => Math.floor(Date.now() / 1e8);
 
-class FileCache extends Map<string, TransformResult> {
+class FileCache<ReturnType> extends Map<string, ReturnType> {
 	/**
 	 * By using tmpdir, the expectation is for the OS to clean any files
 	 * that haven't been read for a while.
@@ -56,7 +56,7 @@ class FileCache extends Map<string, TransformResult> {
 		}
 
 		const cacheFilePath = path.join(this.cacheDirectory, diskCacheHit.fileName);
-		const cachedResult = readJsonFile<TransformResult>(cacheFilePath);
+		const cachedResult = readJsonFile<ReturnType>(cacheFilePath);
 
 		if (!cachedResult) {
 			// Remove broken cache file
@@ -77,7 +77,7 @@ class FileCache extends Map<string, TransformResult> {
 		return cachedResult;
 	}
 
-	set(key: string, value: TransformResult) {
+	set(key: string, value: ReturnType) {
 		super.set(key, value);
 
 		if (value) {
@@ -116,6 +116,6 @@ class FileCache extends Map<string, TransformResult> {
 
 export default (
 	process.env.ESBK_DISABLE_CACHE
-		? new Map<string, TransformResult>()
-		: new FileCache()
+		? new Map<string, Transformed>()
+		: new FileCache<Transformed>()
 );

@@ -1,9 +1,6 @@
 import MagicString from 'magic-string';
-import type { EncodedSourceMap } from '@ampproject/remapping';
+import type { RawSourceMap } from 'source-map';
 import { parseEsm } from '../utils/es-module-lexer';
-
-// Necessary for types to build correctly
-export type { EncodedSourceMap };
 
 const checkEsModule = `.then((mod)=>{
 	const exports = Object.keys(mod);
@@ -16,6 +13,7 @@ const checkEsModule = `.then((mod)=>{
 })`.replace(/[\n\t]+/g, '');
 
 export function transformDynamicImport(
+	filePath: string,
 	code: string,
 ) {
 	// Naive check
@@ -23,22 +21,23 @@ export function transformDynamicImport(
 		return;
 	}
 
-	const [imports] = parseEsm(code);
+	const dynamicImports = parseEsm(code)[0].filter(maybeDynamic => maybeDynamic.d > -1);
 
-	if (imports.length === 0) {
+	if (dynamicImports.length === 0) {
 		return;
 	}
 
 	const magicString = new MagicString(code);
 
-	for (const dynamicImport of imports) {
-		if (dynamicImport.d > -1) {
-			magicString.appendRight(dynamicImport.se, checkEsModule);
-		}
+	for (const dynamicImport of dynamicImports) {
+		magicString.appendRight(dynamicImport.se, checkEsModule);
 	}
 
 	return {
 		code: magicString.toString(),
-		map: magicString.generateMap({ hires: true }) as EncodedSourceMap,
+		map: magicString.generateMap({
+			source: filePath,
+			hires: true,
+		}) as unknown as RawSourceMap,
 	};
 }

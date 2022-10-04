@@ -1,5 +1,8 @@
 import remapping from '@ampproject/remapping';
 import type { SourceMapInput } from '@ampproject/remapping';
+import type { RawSourceMap } from 'source-map';
+
+type SourceMap = SourceMapInput | RawSourceMap;
 
 type MaybePromise<T> = T | Promise<T>;
 
@@ -9,16 +12,18 @@ type IntersectionArray<T extends unknown[]> = (
 		: unknown
 );
 
-type Transformed = {
+type TransformerResult = {
 	code: string;
-	map: SourceMapInput;
-};
-
-type TransformerResult = Transformed | undefined;
+	map: SourceMap;
+	warnings?: any[];
+} | undefined;
 
 type Transformer<
-	Result extends MaybePromise<TransformerResult>
-> = (code: string) => Result;
+	ReturnType extends MaybePromise<TransformerResult>
+> = (
+	filePath: string,
+	code: string,
+) => ReturnType;
 
 type Results<
 	Array_ extends Transformer<MaybePromise<TransformerResult>>[]
@@ -30,64 +35,72 @@ type Results<
 	);
 };
 
-type AddSourceMap<T> = Omit<T, 'map'> & { map: string };
+type AddSourceMap<T> = Omit<T, 'map'> & { map: RawSourceMap };
+
+export type Transformed = {
+	code: string;
+	map: RawSourceMap;
+	warnings: any[];
+};
 
 export function applyTransformersSync<
 	T extends Readonly<Transformer<TransformerResult>[]>,
 >(
+	filePath: string,
 	code: string,
 	transformers: T,
 ) {
-	const maps: SourceMapInput[] = [];
-	const result = {
-		code,
-		map: '',
-	};
+	const maps: SourceMap[] = [];
+	const warnings = [];
+	const result = { code };
 
 	for (const transformer of transformers) {
-		const transformed = transformer(result.code);
+		const transformed = transformer(filePath, result.code);
 
 		if (transformed) {
 			Object.assign(result, transformed);
 			maps.unshift(transformed.map);
+
+			if (transformed.warnings) {
+				warnings.push(...transformed.warnings);
+			}
 		}
 	}
 
-	result.map = (
-		maps.length > 1
-			? remapping(maps, () => null).toString()
-			: maps[0].toString()
-	);
-
-	return result as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
+	return {
+		...result,
+		map: remapping(maps as SourceMapInput[], () => null),
+		warnings,
+	} as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
 }
 
 export async function applyTransformers<
 	T extends Readonly<Transformer<MaybePromise<TransformerResult>>[]>,
 >(
+	filePath: string,
 	code: string,
 	transformers: T,
 ) {
-	const maps: SourceMapInput[] = [];
-	const result = {
-		code,
-		map: '',
-	};
+	const maps: SourceMap[] = [];
+	const warnings = [];
+	const result = { code };
 
 	for (const transformer of transformers) {
-		const transformed = await transformer(result.code);
+		const transformed = await transformer(filePath, result.code);
 
 		if (transformed) {
 			Object.assign(result, transformed);
 			maps.unshift(transformed.map);
+
+			if (transformed.warnings) {
+				warnings.push(...transformed.warnings);
+			}
 		}
 	}
 
-	result.map = (
-		maps.length > 1
-			? remapping(maps, () => null).toString()
-			: maps[0].toString()
-	);
-
-	return result as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
+	return {
+		...result,
+		map: remapping(maps as SourceMapInput[], () => null),
+		warnings,
+	} as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
 }

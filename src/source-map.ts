@@ -1,5 +1,8 @@
 import sourceMapSupport from 'source-map-support';
-import type { SourceMapInput } from '@ampproject/remapping';
+import type { RawSourceMap } from 'source-map';
+import type { Transformed } from './transform/apply-transformers';
+
+const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
 
 export function installSourceMapSupport() {
 	const hasNativeSourceMapSupport = (
@@ -21,10 +24,17 @@ export function installSourceMapSupport() {
 
 	if (hasNativeSourceMapSupport) {
 		process.setSourceMapsEnabled(true);
-		return;
+
+		return (
+			{ code, map }: Transformed,
+		) => (
+			code
+			+ inlineSourceMapPrefix
+			+ Buffer.from(JSON.stringify(map), 'utf8').toString('base64')
+		);
 	}
 
-	const sourcemaps = new Map<string, string>();
+	const sourcemaps = new Map<string, RawSourceMap>();
 
 	sourceMapSupport.install({
 		environment: 'node',
@@ -34,22 +44,11 @@ export function installSourceMapSupport() {
 		},
 	});
 
-	return sourcemaps;
-}
-
-const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
-
-export function applySourceMap(
-	{ code, map }: { code: string; map: SourceMapInput },
-	filePath: string,
-	sourcemaps?: Map<string, string>,
-) {
-	const mapString = (typeof map === 'string' ? map : map.toString());
-
-	if (sourcemaps) {
-		sourcemaps.set(filePath, mapString);
+	return (
+		{ code, map }: Transformed,
+		filePath: string,
+	) => {
+		sourcemaps.set(filePath, map);
 		return code;
-	}
-
-	return code + inlineSourceMapPrefix + Buffer.from(mapString, 'utf8').toString('base64');
+	};
 }
