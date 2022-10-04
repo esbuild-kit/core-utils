@@ -37,28 +37,28 @@ export function transformSync(
 	});
 
 	const hash = sha1(code + JSON.stringify(esbuildOptions) + esbuildVersion);
-	const cacheHit = cache.get(hash);
+	let transformed = cache.get(hash);
 
-	if (cacheHit) {
-		return cacheHit;
-	}
-
-	const transformed = applyTransformersSync(
-		filePath,
-		code,
-		[
-			// eslint-disable-next-line @typescript-eslint/no-shadow
-			(filePath, code) => {
+	if (!transformed) {
+		transformed = applyTransformersSync(
+			filePath,
+			code,
+			[
 				// eslint-disable-next-line @typescript-eslint/no-shadow
-				const transformed = esbuildTransformSync(code, esbuildOptions);
-				if (esbuildOptions.sourcefile !== filePath) {
-					transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile}"`, `"${filePath}"`);
-				}
-				return transformed;
-			},
-			transformDynamicImport,
-		] as const,
-	);
+				(filePath, code) => {
+					// eslint-disable-next-line @typescript-eslint/no-shadow
+					const transformed = esbuildTransformSync(code, esbuildOptions);
+					if (esbuildOptions.sourcefile !== filePath) {
+						transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile}"`, `"${filePath}"`);
+					}
+					return transformed;
+				},
+				transformDynamicImport,
+			] as const,
+		);
+
+		cache.set(hash, transformed);
+	}
 
 	if (transformed.warnings.length > 0) {
 		const { warnings } = transformed;
@@ -66,8 +66,6 @@ export function transformSync(
 			console.log(warning);
 		}
 	}
-
-	cache.set(hash, transformed);
 
 	return transformed;
 }
@@ -85,27 +83,28 @@ export async function transform(
 	});
 
 	const hash = sha1(code + JSON.stringify(esbuildOptions) + esbuildVersion);
-	const cacheHit = cache.get(hash);
-	if (cacheHit) {
-		return cacheHit;
-	}
+	let transformed = cache.get(hash);
 
-	const transformed = await applyTransformers(
-		filePath,
-		code,
-		[
-			// eslint-disable-next-line @typescript-eslint/no-shadow
-			async (filePath, code) => {
+	if (!transformed) {
+		transformed = await applyTransformers(
+			filePath,
+			code,
+			[
 				// eslint-disable-next-line @typescript-eslint/no-shadow
-				const transformed = await esbuildTransform(code, esbuildOptions);
-				if (esbuildOptions.sourcefile !== filePath) {
-					transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile}"`, `"${filePath}"`);
-				}
-				return transformed;
-			},
-			transformDynamicImport,
-		] as const,
-	);
+				async (filePath, code) => {
+					// eslint-disable-next-line @typescript-eslint/no-shadow
+					const transformed = await esbuildTransform(code, esbuildOptions);
+					if (esbuildOptions.sourcefile !== filePath) {
+						transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile}"`, `"${filePath}"`);
+					}
+					return transformed;
+				},
+				transformDynamicImport,
+			] as const,
+		);
+
+		cache.set(hash, transformed);
+	}
 
 	if (transformed.warnings.length > 0) {
 		const { warnings } = transformed;
@@ -113,8 +112,6 @@ export async function transform(
 			console.log(warning);
 		}
 	}
-
-	cache.set(hash, transformed);
 
 	return transformed;
 }

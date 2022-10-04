@@ -15,6 +15,7 @@ type IntersectionArray<T extends unknown[]> = (
 type TransformerResult = {
 	code: string;
 	map: SourceMap;
+	warnings?: any[];
 } | undefined;
 
 type Transformer<
@@ -39,6 +40,7 @@ type AddSourceMap<T> = Omit<T, 'map'> & { map: RawSourceMap };
 export type Transformed = {
 	code: string;
 	map: RawSourceMap;
+	warnings: any[];
 };
 
 export function applyTransformersSync<
@@ -49,6 +51,7 @@ export function applyTransformersSync<
 	transformers: T,
 ) {
 	const maps: SourceMap[] = [];
+	const warnings = [];
 	const result = { code };
 
 	for (const transformer of transformers) {
@@ -57,12 +60,17 @@ export function applyTransformersSync<
 		if (transformed) {
 			Object.assign(result, transformed);
 			maps.unshift(transformed.map);
+
+			if (transformed.warnings) {
+				warnings.push(...transformed.warnings);
+			}
 		}
 	}
 
 	return {
 		...result,
 		map: remapping(maps as SourceMapInput[], () => null),
+		warnings,
 	} as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
 }
 
@@ -74,6 +82,7 @@ export async function applyTransformers<
 	transformers: T,
 ) {
 	const maps: SourceMap[] = [];
+	const warnings = [];
 	const result = { code };
 
 	for (const transformer of transformers) {
@@ -82,11 +91,16 @@ export async function applyTransformers<
 		if (transformed) {
 			Object.assign(result, transformed);
 			maps.unshift(transformed.map);
+
+			if (transformed.warnings) {
+				warnings.push(...transformed.warnings);
+			}
 		}
 	}
 
 	return {
 		...result,
 		map: remapping(maps as SourceMapInput[], () => null),
+		warnings,
 	} as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
 }
