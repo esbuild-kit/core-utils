@@ -34,6 +34,8 @@ export function transformSync(
 		format: 'cjs',
 		sourcefile: filePath,
 		define,
+		banner: '(()=>{',
+		footer: '})()',
 		...extendOptions,
 	});
 
