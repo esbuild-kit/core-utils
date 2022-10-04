@@ -17,23 +17,23 @@ type Transformed = {
 type TransformerResult = Transformed | undefined;
 
 type Transformer<
-	Result extends MaybePromise<TransformerResult> = TransformerResult
+	Result extends MaybePromise<TransformerResult>
 > = (code: string) => Result;
 
 type Results<
 	Array_ extends Transformer<MaybePromise<TransformerResult>>[]
-> = IntersectionArray<{
+> = {
 	[Key in keyof Array_]: (
 		Array_[Key] extends Transformer<infer ReturnType>
-			? ReturnType
+			? Awaited<ReturnType>
 			: unknown
 	);
-}>;
+};
 
 type AddSourceMap<T> = Omit<T, 'map'> & { map: string };
 
 export function applyTransformersSync<
-	T extends Readonly<Transformer[]>,
+	T extends Readonly<Transformer<TransformerResult>[]>,
 >(
 	code: string,
 	transformers: T,
@@ -59,7 +59,7 @@ export function applyTransformersSync<
 			: maps[0].toString()
 	);
 
-	return result as unknown as AddSourceMap<Results<[...T]>>;
+	return result as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
 }
 
 export async function applyTransformers<
@@ -89,5 +89,5 @@ export async function applyTransformers<
 			: maps[0].toString()
 	);
 
-	return result as unknown as AddSourceMap<Results<[...T]>>;
+	return result as unknown as AddSourceMap<IntersectionArray<Results<[...T]>>>;
 }
