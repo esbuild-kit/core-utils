@@ -1,9 +1,6 @@
 import MagicString from 'magic-string';
-import type { EncodedSourceMap } from '@ampproject/remapping';
+import type { RawSourceMap } from 'source-map';
 import { parseEsm } from '../utils/es-module-lexer';
-
-// Necessary for types to build correctly
-export type { EncodedSourceMap };
 
 const checkEsModule = `.then((mod)=>{
 	const exports = Object.keys(mod);
@@ -41,6 +38,6 @@ export function transformDynamicImport(
 		map: magicString.generateMap({
 			source: filePath,
 			hires: true,
-		}) as EncodedSourceMap,
+		}) as unknown as RawSourceMap,
 	};
 }

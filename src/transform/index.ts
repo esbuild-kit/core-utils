@@ -8,15 +8,14 @@ import {
 import { sha1 } from '../utils/sha1';
 import { transformDynamicImport } from './transform-dynamic-import';
 import cache from './cache';
-import { applyTransformersSync, applyTransformers } from './apply-transformers';
+import {
+	applyTransformersSync,
+	applyTransformers,
+	type Transformed,
+} from './apply-transformers';
 import { getEsbuildOptions } from './get-esbuild-options';
 
 export { transformDynamicImport } from './transform-dynamic-import';
-
-type Transformed = {
-	code: string;
-	map: string;
-};
 
 // Used by cjs-loader
 export function transformSync(
