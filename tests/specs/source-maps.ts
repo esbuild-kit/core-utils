@@ -37,5 +37,12 @@ export default testSuite(({ describe }) => {
 			const errorPosition = expected.stderr.toString().match(new RegExp(`${rawFile}(:\\d+:\\d+)`));
 			expect(stderrReceived).toMatch(transformedFile + errorPosition![1]);
 		});
+
+		test('path is same for windows', async () => {
+			const filePath = 'D:\\windows\\path\\index.mts';
+			const transformed = transformSync('1', filePath);
+
+			expect(transformed.map.sources[0]).toBe(filePath);
+		});
 	});
 });

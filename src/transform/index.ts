@@ -51,7 +51,10 @@ export function transformSync(
 					// eslint-disable-next-line @typescript-eslint/no-shadow
 					const transformed = esbuildTransformSync(code, esbuildOptions);
 					if (esbuildOptions.sourcefile !== filePath) {
-						transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile}"`, `"${filePath}"`);
+						transformed.map = transformed.map.replace(
+							JSON.stringify(esbuildOptions.sourcefile),
+							JSON.stringify(filePath),
+						);
 					}
 					return transformed;
 				},
@@ -97,7 +100,10 @@ export async function transform(
 					// eslint-disable-next-line @typescript-eslint/no-shadow
 					const transformed = await esbuildTransform(code, esbuildOptions);
 					if (esbuildOptions.sourcefile !== filePath) {
-						transformed.map = transformed.map.replace(`"${esbuildOptions.sourcefile}"`, `"${filePath}"`);
+						transformed.map = transformed.map.replace(
+							JSON.stringify(esbuildOptions.sourcefile),
+							JSON.stringify(filePath),
+						);
 					}
 					return transformed;
 				},
