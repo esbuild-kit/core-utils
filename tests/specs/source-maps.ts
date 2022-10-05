@@ -1,7 +1,7 @@
 import { spawnSync } from 'child_process';
+import path from 'path';
 import { testSuite, expect } from 'manten';
 import { createFixture } from 'fs-fixture';
-import path from 'path';
 import {
 	transformSync,
 	installSourceMapSupport,
