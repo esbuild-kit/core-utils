@@ -81,7 +81,7 @@ export default testSuite(({ describe }) => {
 
 				expect(transformed.map).not.toBe('');
 
-				const map = JSON.parse(transformed.map);
+				const { map } = transformed;
 
 				expect(map.sources.length).toBe(1);
 				expect(map.sources[0]).toBe(fileName);
@@ -119,8 +119,7 @@ export default testSuite(({ describe }) => {
 
 				expect(transformed.map).not.toBe('');
 
-				const map = JSON.parse(transformed.map);
-
+				const { map } = transformed;
 				expect(map.sources.length).toBe(1);
 				expect(map.sources[0]).toBe(fileName);
 				expect(map.names).toStrictEqual(['named']);

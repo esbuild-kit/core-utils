@@ -1,38 +1,41 @@
+import { spawnSync } from 'child_process';
 import { testSuite, expect } from 'manten';
-import { createFsRequire } from 'fs-require';
-import { Volume } from 'memfs';
+import { createFixture } from 'fs-fixture';
+import path from 'path';
 import {
 	transformSync,
 	installSourceMapSupport,
 } from '#esbuild-kit/core-utils';
 
-// Native source maps disabled in ./tests/index.ts
 const applySourceMap = installSourceMapSupport();
 
 export default testSuite(({ describe }) => {
 	describe('source map', ({ test }) => {
-		test('sourcemap file', () => {
-			const fileName = 'file.mts';
+		test('sourcemap file', async () => {
+			const rawFile = 'raw.js';
+			const code = 'let nameInError;\n\n\n    nameInError();';
+			const transformedFile = 'transformed.mts';
 			const transformed = transformSync(
-				'let nameInError;\nnameInError();',
-				fileName,
+				code,
+				transformedFile,
 				{ format: 'cjs' },
 			);
 
-			const fsRequire = createFsRequire(Volume.fromJSON({
-				'/file.mts': applySourceMap(
-					transformed,
-					`fs-require://2/${fileName}`,
-				),
-			}));
+			const fixture = await createFixture({
+				[rawFile]: code,
+				[transformedFile]: applySourceMap(transformed, ''),
+			});
 
-			try {
-				fsRequire(`/${fileName}`);
-			} catch (error) {
-				const { stack } = error as any;
-				expect(stack).toMatch('nameInError');
-				expect(stack).toMatch(`${fileName}:2:13`);
-			}
+			const expected = spawnSync(process.execPath, [path.join(fixture.path, rawFile)]);
+			const received = spawnSync(process.execPath, ['--enable-source-maps', path.join(fixture.path, transformedFile)]);
+
+			await fixture.rm();
+
+			const stderrReceived = received.stderr.toString();
+			expect(stderrReceived).toMatch('nameInError');
+
+			const errorPosition = expected.stderr.toString().match(new RegExp(`${rawFile}(:\\d+:\\d+)`));
+			expect(stderrReceived).toMatch(transformedFile + errorPosition![1]);
 		});
 	});
 });
