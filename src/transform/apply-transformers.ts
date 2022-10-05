@@ -40,7 +40,7 @@ type AddSourceMap<T> = Omit<T, 'map'> & { map: RawSourceMap };
 export type Transformed = {
 	code: string;
 	map: RawSourceMap;
-	warnings: any[];
+	warnings?: any[];
 };
 
 export function applyTransformersSync<

@@ -62,7 +62,7 @@ export function transformSync(
 		cache.set(hash, transformed);
 	}
 
-	if (transformed.warnings.length > 0) {
+	if (transformed.warnings && transformed.warnings.length > 0) {
 		const { warnings } = transformed;
 		for (const warning of warnings) {
 			console.log(warning);
@@ -108,7 +108,7 @@ export async function transform(
 		cache.set(hash, transformed);
 	}
 
-	if (transformed.warnings.length > 0) {
+	if (transformed.warnings && transformed.warnings.length > 0) {
 		const { warnings } = transformed;
 		for (const warning of warnings) {
 			console.log(warning);
