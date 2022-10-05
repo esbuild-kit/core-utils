@@ -7,6 +7,8 @@ const base64Module = (code: string) => `data:text/javascript;base64,${Buffer.fro
 
 const fixtures = {
 	ts: `
+	const __filename = 'filename';
+	const __dirname = 'dirname';
 	try {
 		const unusedVariable1 = 1;
 	} catch (unusedError) {
@@ -18,6 +20,8 @@ const fixtures = {
 	`,
 
 	esm: `
+	const __filename = 'filename';
+	const __dirname = 'dirname';
 	try {
 		const unusedVariable1 = 1;
 	} catch (unusedError) {
@@ -77,7 +81,7 @@ export default testSuite(({ describe }) => {
 
 				expect(transformed.map).not.toBe('');
 
-				const map = JSON.parse(transformed.map);
+				const { map } = transformed;
 
 				expect(map.sources.length).toBe(1);
 				expect(map.sources[0]).toBe(fileName);
@@ -115,8 +119,7 @@ export default testSuite(({ describe }) => {
 
 				expect(transformed.map).not.toBe('');
 
-				const map = JSON.parse(transformed.map);
-
+				const { map } = transformed;
 				expect(map.sources.length).toBe(1);
 				expect(map.sources[0]).toBe(fileName);
 				expect(map.names).toStrictEqual(['named']);

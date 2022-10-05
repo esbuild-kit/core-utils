@@ -9,6 +9,7 @@ specifiers:
   es-module-lexer: ^1.0.3
   esbuild: ~0.15.10
   eslint: ^8.24.0
+  fs-fixture: ^1.1.0
   fs-require: ^1.4.0
   magic-string: ^0.26.4
   manten: ^0.3.0
@@ -31,6 +32,7 @@ devDependencies:
   clean-pkg-json: 1.2.0
   es-module-lexer: 1.0.3
   eslint: 8.24.0
+  fs-fixture: 1.1.0
   fs-require: 1.4.0
   magic-string: 0.26.4
   manten: 0.3.0
@@ -1843,6 +1845,10 @@ packages:
 
   /flatted/3.2.7:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
+    dev: true
+
+  /fs-fixture/1.1.0:
+    resolution: {integrity: sha512-Ic0Ri51A8sCCJ3wbye1cpWA+5FouOYGYfaK5xR6yvoT4mlKWSefYLE51XbxcIUjDcxJiYv6BuA6pDzVmXdJicw==}
     dev: true
 
   /fs-monkey/1.0.3:
