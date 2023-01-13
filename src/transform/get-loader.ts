@@ -1,21 +1,28 @@
 import type { Loader } from 'esbuild';
 
-const loaderMap = (() => {
-	const map = new Map<string, Loader>();
+const loaderMap = new Map<string, Loader>();
+let parsedEnv: string | undefined;
 
-	if (process.env.ESBK_LOADER_MAP) {
-		const entries = process.env.ESBK_LOADER_MAP.split(',');
+const parseEnv = () => {
+	if (parsedEnv === process.env.ESBK_LOADER_MAP) {
+		return;
+	}
+
+	loaderMap.clear();
+	parsedEnv = process.env.ESBK_LOADER_MAP;
+
+	if (parsedEnv) {
+		const entries = parsedEnv.split(',');
 
 		for (const entry of entries) {
 			const [extension, loader] = entry.trim().split('=');
-			map.set(extension, loader as Loader);
+			loaderMap.set(extension, loader as Loader);
 		}
 	}
-
-	return map;
-})();
+};
 
 export const getLoader = (extension?: string): Loader => {
+	parseEnv();
 	const override = extension ? loaderMap.get(extension) : undefined;
 
 	// "default" tells esbuild to infer loader from file name

@@ -125,5 +125,35 @@ export default testSuite(({ describe }) => {
 				expect(map.names).toStrictEqual(['named']);
 			});
 		});
+
+		describe('loader mappings', async ({ test }) => {
+			await test('configure loader for html', async () => {
+				const oldEnv = process.env.ESBK_LOADER_MAP;
+
+				try {
+					process.env.ESBK_LOADER_MAP = '.html=text';
+
+					const transformed = await transform(
+						'<html></html>',
+						'file.html',
+						{ format: 'esm' },
+					);
+
+					expect(transformed.code).toBe('var file_default="<html></html>";export{file_default as default};\n');
+				} finally {
+					process.env.ESBK_LOADER_MAP = oldEnv;
+				}
+			});
+
+			await test('error without loader for html', async () => {
+				const promise = transform(
+					'<html></html>',
+					'file.html',
+					{ format: 'esm' },
+				);
+
+				await expect(promise).rejects.toThrow('error: Do not know how to load path: file.html');
+			});
+		});
 	});
 });
