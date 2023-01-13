@@ -1,17 +1,19 @@
 import path from 'path';
 import type { TransformOptions } from 'esbuild';
+import { getLoader } from './get-loader';
 
 const nodeVersion = process.versions.node;
 
 export const getEsbuildOptions = (
 	extendOptions: TransformOptions,
 ) => {
+	const { sourcefile } = extendOptions;
+	const extension = sourcefile && path.extname(sourcefile);
+
 	const options: TransformOptions = {
 		target: `node${nodeVersion}`,
 
-		// "default" tells esbuild to infer loader from file name
-		// https://github.com/evanw/esbuild/blob/4a07b17adad23e40cbca7d2f8931e8fb81b47c33/internal/bundler/bundler.go#L158
-		loader: 'default',
+		loader: getLoader(extension),
 
 		sourcemap: true,
 
@@ -31,10 +33,7 @@ export const getEsbuildOptions = (
 		...extendOptions,
 	};
 
-	if (options.sourcefile) {
-		const { sourcefile } = options;
-		const extension = path.extname(sourcefile);
-
+	if (sourcefile) {
 		if (extension) {
 			// https://github.com/evanw/esbuild/issues/1932
 			if (extension === '.cts' || extension === '.mts') {
