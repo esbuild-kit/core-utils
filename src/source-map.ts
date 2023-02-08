@@ -1,6 +1,7 @@
-import sourceMapSupport from 'source-map-support';
-import type { RawSourceMap } from 'source-map';
+import sourceMapSupport, { type UrlAndMap } from 'source-map-support';
 import type { Transformed } from './transform/apply-transformers';
+
+export type RawSourceMap = UrlAndMap['map'];
 
 const inlineSourceMapPrefix = '\n//# sourceMappingURL=data:application/json;base64,';
 
