@@ -6,12 +6,12 @@ specifiers:
   '@types/node': ^18.13.0
   '@types/source-map-support': ^0.5.6
   clean-pkg-json: ^1.2.0
-  es-module-lexer: ^1.0.3
+  es-module-lexer: ^1.1.1
   esbuild: ~0.17.6
   eslint: ^8.33.0
   fs-fixture: ^1.2.0
   fs-require: ^1.6.0
-  magic-string: ^0.26.4
+  magic-string: ^0.26.7
   manten: ^0.3.0
   memfs: ^3.4.13
   pkgroll: ^1.8.2
@@ -30,11 +30,11 @@ devDependencies:
   '@types/node': 18.13.0
   '@types/source-map-support': 0.5.6
   clean-pkg-json: 1.2.0
-  es-module-lexer: 1.0.3
+  es-module-lexer: 1.1.1
   eslint: 8.33.0
   fs-fixture: 1.2.0
   fs-require: 1.6.0
-  magic-string: 0.26.4
+  magic-string: 0.26.7
   manten: 0.3.0
   memfs: 3.4.13
   pkgroll: 1.8.2_typescript@4.9.5
@@ -1118,8 +1118,8 @@ packages:
       unbox-primitive: 1.0.2
     dev: true
 
-  /es-module-lexer/1.0.3:
-    resolution: {integrity: sha512-iC67eXHToclrlVhQfpRawDiF8D8sQxNxmbqw5oebegOaJkyx/w9C/k57/5e6yJR2zIByRt9OXdqX50DV2t6ZKw==}
+  /es-module-lexer/1.1.1:
+    resolution: {integrity: sha512-n3ruqU8Te7I5prBd6d0darM8ajFuVNhLWvgo04hN7goWSaSrxe7ENOZitac7akN0A2o+8fMomBDsNPvW/eE3CQ==}
     dev: true
 
   /es-shim-unscopables/1.0.0:
@@ -2469,13 +2469,6 @@ packages:
 
   /magic-string/0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
-    dependencies:
-      sourcemap-codec: 1.4.8
-    dev: true
-
-  /magic-string/0.26.4:
-    resolution: {integrity: sha512-e5uXtVJ22aEpK9u1+eQf0fSxHeqwyV19K+uGnlROCxUhzwRip9tBsaMViK/0vC3viyPd5Gtucp3UmEp/Q2cPTQ==}
-    engines: {node: '>=12'}
     dependencies:
       sourcemap-codec: 1.4.8
     dev: true
