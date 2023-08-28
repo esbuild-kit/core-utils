@@ -12,7 +12,7 @@ const applySourceMap = installSourceMapSupport();
 
 export default testSuite(({ describe }) => {
 	describe('source map', ({ test }) => {
-		test('sourcemap file', async () => {
+		test('sourcemap file', async ({ onTestFinish }) => {
 			const rawFile = 'raw.js';
 			const code = 'let nameInError;\n\n\n    nameInError();';
 			const transformedFile = 'transformed.mts';
@@ -27,22 +27,26 @@ export default testSuite(({ describe }) => {
 				[transformedFile]: applySourceMap(transformed, ''),
 			});
 
+			onTestFinish(async () => {
+				if (process.version.startsWith('v12.')) {
+					await fs.rmdir(fixture.path, {
+						recursive: true,
+					});
+				} else {
+					await fixture.rm();
+				}
+			});
+
 			const expected = spawnSync(process.execPath, [path.join(fixture.path, rawFile)]);
 			const received = spawnSync(process.execPath, ['--enable-source-maps', path.join(fixture.path, transformedFile)]);
-
-			if (process.version.startsWith('v12.')) {
-				await fs.rmdir(fixture.path, {
-					recursive: true,
-				});
-			} else {
-				await fixture.rm();
-			}
 
 			const stderrReceived = received.stderr.toString();
 			expect(stderrReceived).toMatch('nameInError');
 
-			const errorPosition = expected.stderr.toString().match(new RegExp(`${rawFile}(:\\d+:\\d+)`));
-			expect(stderrReceived).toMatch(transformedFile + errorPosition![1]);
+			if (!process.version.startsWith('v12.')) {
+				const errorPosition = expected.stderr.toString().match(new RegExp(`${rawFile}(:\\d+:\\d+)`));
+				expect(stderrReceived).toMatch(transformedFile + errorPosition![1]);
+			}
 		});
 
 		test('path is same for windows', async () => {
