@@ -9,6 +9,7 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -19,8 +20,9 @@ jobs:
         node-version-file: '.nvmrc'
 
     - name: Setup pnpm
-      uses: pnpm/action-setup@v2
+      uses: pnpm/action-setup@v2.4.0
       with:
+        standalone: true
         version: 8
         run_install: true
 
@@ -30,5 +32,16 @@ jobs:
     - name: Type check
       run: pnpm type-check
 
+    - name: Build
+      run: pnpm build
+
     - name: Test
+      run: pnpm test
+
+    - name: Use Node.js 12
+      uses: actions/setup-node@v3
+      with:
+        node-version: '12'
+
+    - name: Test with Node v12
       run: pnpm test

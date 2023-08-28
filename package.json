@@ -30,7 +30,7 @@
 		"build": "pkgroll --target node12.20 --minify",
 		"lint": "eslint --cache .",
 		"type-check": "tsc --noEmit",
-		"test": "pnpm build && tsx --no-cache tests",
+		"test": "tsx --no-cache tests",
 		"dev": "tsx watch --no-cache --conditions=development tests",
 		"prepack": "pnpm build && clean-pkg-json"
 	},
