@@ -10,7 +10,7 @@ const checkEsModule = `.then((mod)=>{
 		return mod.default
 	}
 	return mod
-})`.replace(/[\n\t]+/g, '');
+})`.replaceAll(/[\n\t]+/g, '');
 
 export function transformDynamicImport(
 	filePath: string,

@@ -65,7 +65,7 @@ class FileCache<ReturnType> extends Map<string, ReturnType> {
 					const index = this.cacheFiles.indexOf(diskCacheHit);
 					this.cacheFiles.splice(index, 1);
 				},
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 				() => {},
 			);
 			return;
@@ -91,7 +91,7 @@ class FileCache<ReturnType> extends Map<string, ReturnType> {
 				path.join(this.cacheDirectory, `${time}-${key}`),
 				JSON.stringify(value),
 			).catch(
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 				() => {},
 			);
 		}
@@ -106,7 +106,7 @@ class FileCache<ReturnType> extends Map<string, ReturnType> {
 			// Remove if older than ~7 days
 			if ((time - cache.time) > 7) {
 				fs.promises.unlink(path.join(this.cacheDirectory, cache.fileName)).catch(
-					// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 					() => {},
 				);
 			}
