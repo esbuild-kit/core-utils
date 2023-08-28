@@ -26,6 +26,9 @@ jobs:
     - name: Type check
       run: pnpm type-check
 
+    - name: Build
+      run: pnpm build
+
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
