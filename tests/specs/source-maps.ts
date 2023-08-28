@@ -8,6 +8,8 @@ import {
 	installSourceMapSupport,
 } from '#esbuild-kit/core-utils';
 
+const isNode12 = process.version.startsWith('v12.');
+
 const applySourceMap = installSourceMapSupport();
 
 export default testSuite(({ describe }) => {
@@ -28,7 +30,7 @@ export default testSuite(({ describe }) => {
 			});
 
 			onTestFinish(async () => {
-				if (process.version.startsWith('v12.')) {
+				if (isNode12) {
 					await fs.rmdir(fixture.path, {
 						recursive: true,
 					});
@@ -43,7 +45,8 @@ export default testSuite(({ describe }) => {
 			const stderrReceived = received.stderr.toString();
 			expect(stderrReceived).toMatch('nameInError');
 
-			if (!process.version.startsWith('v12.')) {
+			// Node 12 doesn't support native source maps
+			if (!isNode12) {
 				const errorPosition = expected.stderr.toString().match(new RegExp(`${rawFile}(:\\d+:\\d+)`));
 				expect(stderrReceived).toMatch(transformedFile + errorPosition![1]);
 			}
