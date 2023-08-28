@@ -71,6 +71,16 @@ export default testSuite(({ describe }) => {
 				).not.toThrow();
 			});
 
+			test('dynamic import', () => {
+				const dynamicImport = transformSync(
+					'import((0, _url.pathToFileURL)(path).href)',
+					'file.js',
+					{ format: 'cjs' },
+				);
+
+				expect(dynamicImport).toMatch('.href).then');
+			});
+
 			test('sourcemap file', () => {
 				const fileName = 'file.mts';
 				const transformed = transformSync(
