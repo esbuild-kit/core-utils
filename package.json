@@ -27,7 +27,7 @@
 		}
 	},
 	"scripts": {
-		"build": "pkgroll --minify",
+		"build": "pkgroll --target node12.20 --minify",
 		"lint": "eslint --cache .",
 		"type-check": "tsc --noEmit",
 		"test": "pnpm build && tsx --no-cache tests",
