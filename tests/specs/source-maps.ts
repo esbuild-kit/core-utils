@@ -1,5 +1,6 @@
 import { spawnSync } from 'child_process';
 import path from 'path';
+import { promises as fs } from 'fs';
 import { testSuite, expect } from 'manten';
 import { createFixture } from 'fs-fixture';
 import {
@@ -29,7 +30,13 @@ export default testSuite(({ describe }) => {
 			const expected = spawnSync(process.execPath, [path.join(fixture.path, rawFile)]);
 			const received = spawnSync(process.execPath, ['--enable-source-maps', path.join(fixture.path, transformedFile)]);
 
-			await fixture.rm();
+			if (process.version.startsWith('v12.')) {
+				await fs.rmdir(fixture.path, {
+					recursive: true,
+				});
+			} else {
+				await fixture.rm();
+			}
 
 			const stderrReceived = received.stderr.toString();
 			expect(stderrReceived).toMatch('nameInError');
