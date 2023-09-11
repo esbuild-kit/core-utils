@@ -27,15 +27,15 @@
 		}
 	},
 	"scripts": {
-		"build": "pkgroll --minify",
+		"build": "pkgroll --target node12.20 --minify",
 		"lint": "eslint --cache .",
 		"type-check": "tsc --noEmit",
-		"test": "pnpm build && tsx --no-cache tests",
+		"test": "tsx --no-cache tests",
 		"dev": "tsx watch --no-cache --conditions=development tests",
 		"prepack": "pnpm build && clean-pkg-json"
 	},
 	"dependencies": {
-		"esbuild": "~0.19.2",
+		"esbuild": "~0.18.20",
 		"source-map-support": "^0.5.21"
 	},
 	"devDependencies": {

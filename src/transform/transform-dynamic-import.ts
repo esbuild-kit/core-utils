@@ -10,7 +10,10 @@ const checkEsModule = `.then((mod)=>{
 		return mod.default
 	}
 	return mod
-})`.replaceAll(/[\n\t]+/g, '');
+})`
+	// replaceAll is not supported in Node 12
+	// eslint-disable-next-line unicorn/prefer-string-replace-all
+	.replace(/[\n\t]+/g, '');
 
 export function transformDynamicImport(
 	filePath: string,
