@@ -32,9 +32,7 @@ export function transformDynamicImport(
 
 	const magicString = new MagicString(code);
 
-	console.log(dynamicImports);
 	for (const dynamicImport of dynamicImports) {
-		console.log(code.slice(dynamicImport.ss, dynamicImport.se));
 		magicString.appendRight(dynamicImport.se, checkEsModule);
 	}
 
