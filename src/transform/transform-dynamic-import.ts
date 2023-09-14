@@ -5,7 +5,7 @@ import { parseEsm } from '../utils/es-module-lexer';
 const checkEsModule = `.then((mod)=>{
 	const exports = Object.keys(mod);
 	if(
-		exports.length===1&&exports[0]==='default'&&mod.default.__esModule
+		exports.length===1&&exports[0]==='default'&&mod.default&&mod.default.__esModule
 	){
 		return mod.default
 	}
