@@ -11,11 +11,11 @@ export const resolveTsPath = (
 ) => {
 	const extension = path.extname(filePath);
 	const [extensionNoQuery, query] = path.extname(filePath).split('?');
-	const tsExtension = tsExtensions[extensionNoQuery];
+	const possibleExtensions = tsExtensions[extensionNoQuery];
 
-	if (tsExtension) {
+	if (possibleExtensions) {
 		const extensionlessPath = filePath.slice(0, -extension.length);
-		return tsExtension.map(
+		return possibleExtensions.map(
 			(tsExtension) => (
 				extensionlessPath
 				+ tsExtension
