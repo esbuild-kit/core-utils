@@ -16,11 +16,11 @@ export const resolveTsPath = (
 	if (possibleExtensions) {
 		const extensionlessPath = filePath.slice(0, -extension.length);
 		return possibleExtensions.map(
-			(tsExtension) => (
+			tsExtension => (
 				extensionlessPath
 				+ tsExtension
 				+ (query ? `?${query}` : '')
-			)
+			),
 		);
 	}
 };
