@@ -1,61 +1,33 @@
 {
-	"name": "@esbuild-kit/core-utils",
-	"version": "0.0.0-semantic-release",
-	"publishConfig": {
-		"access": "public"
-	},
-	"license": "MIT",
-	"repository": "esbuild-kit/core-utils",
-	"author": {
-		"name": "Hiroki Osame",
-		"email": "hiroki.osame@gmail.com"
-	},
-	"files": [
-		"dist"
-	],
-	"main": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"exports": {
-		"types": "./dist/index.d.ts",
-		"default": "./dist/index.js"
-	},
-	"imports": {
-		"#esbuild-kit/core-utils": {
-			"types": "./src/index.ts",
-			"development": "./src/index.ts",
-			"default": "./dist/index.js"
-		}
-	},
-	"scripts": {
-		"build": "pkgroll --target node12.20 --minify",
-		"lint": "eslint --cache .",
-		"type-check": "tsc --noEmit",
-		"test": "tsx --no-cache tests",
-		"dev": "tsx watch --no-cache --conditions=development tests",
-		"prepack": "pnpm build && clean-pkg-json"
-	},
-	"dependencies": {
-		"esbuild": "~0.18.20",
-		"source-map-support": "^0.5.21"
-	},
-	"devDependencies": {
-		"@ampproject/remapping": "^2.2.1",
-		"@pvtnbr/eslint-config": "^0.36.0",
-		"@types/node": "^20.6.0",
-		"@types/source-map-support": "^0.5.7",
-		"clean-pkg-json": "^1.2.0",
-		"es-module-lexer": "^1.3.1",
-		"eslint": "^8.49.0",
-		"fs-fixture": "^1.2.0",
-		"fs-require": "^1.6.0",
-		"magic-string": "^0.30.3",
-		"manten": "^1.1.0",
-		"memfs": "^4.2.1",
-		"pkgroll": "^1.11.0",
-		"tsx": "^3.12.8",
-		"typescript": "^5.2.2"
-	},
-	"eslintConfig": {
-		"extends": "@pvtnbr"
-	}
+  "name": "@esbuild-kit/core-utils",
+  "version": "0.0.0-semantic-release",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": "esbuild-kit/core-utils",
+  "author": {
+    "name": "Hiroki Osame",
+    "email": "hiroki.osame@gmail.com"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "default": "./dist/index.js"
+  },
+  "imports": {
+    "#esbuild-kit/core-utils": {
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "esbuild": "~0.18.20",
+    "source-map-support": "^0.5.21"
+  }
 }
