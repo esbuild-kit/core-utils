@@ -1,9 +1,10 @@
 import path from 'path';
 
-const tsExtensions: Record<string, string> = Object.create(null);
-tsExtensions['.js'] = '.ts';
-tsExtensions['.cjs'] = '.cts';
-tsExtensions['.mjs'] = '.mts';
+const tsExtensions: Record<string, string[]> = Object.create(null);
+tsExtensions['.js'] = ['.ts', '.tsx', '.js', '.jsx'];
+tsExtensions['.jsx'] = ['.tsx', '.ts', '.jsx', '.js'];
+tsExtensions['.cjs'] = ['.cts'];
+tsExtensions['.mjs'] = ['.mts'];
 
 export const resolveTsPath = (
 	filePath: string,
@@ -13,10 +14,13 @@ export const resolveTsPath = (
 	const tsExtension = tsExtensions[extensionNoQuery];
 
 	if (tsExtension) {
-		return (
-			filePath.slice(0, -extension.length)
-			+ tsExtension
-			+ (query ? `?${query}` : '')
+		const extensionlessPath = filePath.slice(0, -extension.length);
+		return tsExtension.map(
+			(tsExtension) => (
+				extensionlessPath
+				+ tsExtension
+				+ (query ? `?${query}` : '')
+			)
 		);
 	}
 };
