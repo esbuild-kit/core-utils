@@ -38,6 +38,14 @@
 		"esbuild": "~0.18.20",
 		"source-map-support": "^0.5.21"
 	},
+	"peerDependencies": {
+		"@types/source-map-support": "^0.5.6"
+	},
+	"peerDependenciesMeta": {
+		"@types/source-map-support": {
+			"optional": true
+		}
+	},
 	"devDependencies": {
 		"@ampproject/remapping": "^2.2.1",
 		"@pvtnbr/eslint-config": "^0.36.0",
